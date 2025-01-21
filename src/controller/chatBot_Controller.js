@@ -90,37 +90,57 @@ class ChatBot_Controller {
   }
 
   async webhookWhatsApp(req, res) {
-    const body = req.body;
+    try {
+      const body = req.body;
 
-    if (body.object === "whatsapp_business_account") {
-      body.entry.forEach((entry) => {
-        entry.changes.forEach((change) => {
-          if (change.field === "messages") {
-            const messages = change.value.messages || [];
+      if (body.object === "whatsapp_business_account") {
+        body.entry.forEach((entry) => {
+          entry.changes.forEach((change) => {
+            if (change.field === "messages") {
+              const messages = change.value.messages || [];
 
-            messages.forEach((message) => {
-              const from = message.from || "número não identificado";
-              const messageId = message.id || "id não identificado";
-              const messageType = message.type || "tipo não identificado";
+              messages.forEach((message) => {
+                const from = message.from || "número não identificado";
+                const messageId = message.id || "id não identificado";
+                const messageType = message.type || "tipo não identificado";
 
-              // Lida com mensagens de texto
-              if (messageType === "text" && message.text) {
-                const messageBody = message.text.body || "mensagem vazia";
-                console.log(
-                  `Mensagem de texto recebida de ${from}: ${messageBody}`
-                );
+                // Lida com mensagens de texto
+                if (messageType === "text" && message.text) {
+                  const messageBody = message.text.body || "mensagem vazia";
+                  console.log(
+                    `Mensagem de texto recebida de ${from}: ${messageBody}`
+                  );
+                  //reponde mensagem
+                  replyMessage(from, messageType, "ola tudo bem?");
+                }
+                // Lida com respostas de botões
+                else if (messageType === "interactive" && message.interactive) {
+                  const buttonReply = message.interactive.button_reply || {};
+                  const replyId = buttonReply.id || "null";
+                  const replyTitle = buttonReply.title || "null";
 
-                //_________________________________________________________________________________________________Bloco de alteração
-                //reponde mensagem
-                replyMessage(from, messageType, "ola tudo bem?");
-                //_________________________________________________________________________________________________Bloco de alteração
-              } else {
-                console.log(`Tipo de mensagem não tratado: ${messageType}`);
-              }
-            });
-          }
+                  console.log(
+                    `Resposta de botão recebida de ${from}: ID=${replyId}, Título=${replyTitle}`
+                  );
+                  //reponde mensagem
+                  replyMessage(
+                    from,
+                    messageType,
+                    `voce selecionou ${replyTitle}`
+                  );
+                } else {
+                  console.log(`Tipo de mensagem não tratado: ${messageType}`);
+                }
+              });
+            }
+          });
         });
-      });
+      }
+
+      res.sendStatus(200); // Confirma o recebimento
+    } catch (error) {
+      console.error("Erro ao processar webhook:", error.message);
+      res.sendStatus(500);
     }
   }
 
