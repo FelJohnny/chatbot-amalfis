@@ -2,30 +2,45 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("roles_permissoes", {
+    await queryInterface.createTable("chatbot_mensagems", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+      },
+      atendente_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "chatbot_atendentes",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      cliente_id: {
         type: Sequelize.INTEGER,
-      },
-      role_id: {
-        type: Sequelize.UUID,
+        allowNull: false,
         references: {
-          model: "roles",
+          model: "chatbot_clientes",
           key: "id",
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      permissao_id: {
+      sessao_id: {
         type: Sequelize.UUID,
+        allowNull: false,
         references: {
-          model: "permissoes",
+          model: "chatbot_sessaos",
           key: "id",
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+      },
+      conteudo_message: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("roles_permissoes");
+    await queryInterface.dropTable("chatbot_mensagems");
   },
 };

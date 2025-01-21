@@ -2,32 +2,31 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("usuarios", {
+    await queryInterface.createTable("chatbot_sessaos", {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      nome: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      senha: {
-        type: Sequelize.STRING,
-      },
-      contato: {
-        type: Sequelize.STRING,
-      },
-      role_id: {
-        type: Sequelize.UUID,
+      cliente_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: "roles",
+          model: "chatbot_clientes",
           key: "id",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      atendente_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "chatbot_atendentes",
+          key: "id",
+        },
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
       createdAt: {
@@ -41,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("usuarios");
+    await queryInterface.dropTable("chatbot_sessaos");
   },
 };

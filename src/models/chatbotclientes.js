@@ -1,28 +1,43 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class ChatbotClientes extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class ChatbotCliente extends Model {
     static associate(models) {
-      // define association here
+      // Relacionamento com Sessao
+      ChatbotCliente.hasMany(models.ChatbotSessao, {
+        foreignKey: "cliente_id",
+        as: "sessoes",
+      });
+
+      // Relacionamento com Avaliacao
+      ChatbotCliente.hasMany(models.ChatbotAvaliacao, {
+        foreignKey: "cliente_id",
+        as: "avaliacoes",
+      });
+
+      // Relacionamento com Mensagem
+      ChatbotCliente.hasMany(models.ChatbotMensagem, {
+        foreignKey: "cliente_id",
+        as: "mensagens",
+      });
     }
   }
-  ChatbotClientes.init({
-    numero_contato: DataTypes.STRING,
-    nome: DataTypes.STRING,
-    cnpj: DataTypes.STRING,
-    empresa: DataTypes.STRING,
-    qtde_colaborador: DataTypes.INTEGER,
-    local_emp: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'ChatbotClientes',
-  });
-  return ChatbotClientes;
+
+  ChatbotCliente.init(
+    {
+      numero_contato: DataTypes.STRING,
+      nome: DataTypes.STRING,
+      cnpj: DataTypes.STRING,
+      empresa: DataTypes.STRING,
+      qtde_colaborador: DataTypes.INTEGER,
+      local_emp: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "ChatbotCliente",
+      tableName: "chatbot_clientes",
+    }
+  );
+
+  return ChatbotCliente;
 };

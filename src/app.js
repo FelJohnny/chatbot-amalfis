@@ -1,5 +1,5 @@
-import express from "express";
-import routes from "./routes";
+const express = require("express");
+const routes = require("./routes/index.js"); // Importa as rotas
 const { sequelizeSisplan, sequelizeAmalfisCli } = require("./config/config.js");
 
 const app = express();
@@ -12,7 +12,7 @@ sequelizeSisplan
   .then(() => {
     console.log("Conexão com o SISPLAN estabelecida com sucesso");
   })
-  .catch((err: any) => {
+  .catch((err) => {
     console.error("Não foi possível se conectar com o SISPLAN", err);
   });
 
@@ -22,8 +22,8 @@ sequelizeAmalfisCli
   .then(() => {
     console.log("Conexão com o AMALFIS-CHATBOT estabelecida com sucesso");
   })
-  .catch((err: any) => {
+  .catch((err) => {
     console.error("Não foi possível se conectar com o AMALFIS-CHATBOT", err);
   });
 
-export default app;
+module.exports = app;
