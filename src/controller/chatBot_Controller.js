@@ -6,7 +6,7 @@ const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "SEU_VERIFY_TOKEN_AQUI";
 const API_URL = process.env.API_URL;
 
 // Função genérica para enviar requisições HTTPS
-const sendHttpsRequest = (url, method, data, headers) => {
+const sendHttpsRequest = async (url, method, data, headers) => {
   return new Promise((resolve, reject) => {
     const parsedUrl = new URL(url);
 
@@ -43,6 +43,35 @@ const sendHttpsRequest = (url, method, data, headers) => {
 
     req.end();
   });
+};
+
+//resposta de mensagens
+const replyMessage = async (to, type, message) => {
+  if (!to || !message || !type) {
+    console.log('Os campos "to", type e "message" são obrigatórios.');
+  } else {
+    try {
+      const data = {
+        messaging_product: "whatsapp",
+        to,
+        type: "text",
+        text: { body: message },
+      };
+
+      const headers = {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      };
+
+      const response = await sendHttpsRequest(API_URL, "POST", data, headers);
+      console.log({
+        message: "Mensagem de texto respondida com sucesso!",
+        data: response,
+      });
+    } catch (error) {
+      console.error("Erro ao enviar mensagem de texto:", error.message);
+    }
+  }
 };
 
 class ChatBot_Controller {
@@ -92,35 +121,6 @@ class ChatBot_Controller {
           }
         });
       });
-    }
-  }
-
-  //resposta de mensagens
-  async replyMessage(to, type, message) {
-    if (!to || !message || !type) {
-      console.log('Os campos "to", type e "message" são obrigatórios.');
-    } else {
-      try {
-        const data = {
-          messaging_product: "whatsapp",
-          to,
-          type: "text",
-          text: { body: message },
-        };
-
-        const headers = {
-          Authorization: `Bearer ${ACCESS_TOKEN}`,
-          "Content-Type": "application/json",
-        };
-
-        const response = await sendHttpsRequest(API_URL, "POST", data, headers);
-        console.log({
-          message: "Mensagem de texto respondida com sucesso!",
-          data: response,
-        });
-      } catch (error) {
-        console.error("Erro ao enviar mensagem de texto:", error.message);
-      }
     }
   }
 
