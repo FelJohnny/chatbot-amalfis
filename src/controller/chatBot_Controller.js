@@ -72,7 +72,7 @@ class ChatBot_Controller {
                   const resposta = await chatbot_services.buscaRespostaCliente(
                     1
                   );
-                  const msg = `👋 Olá! Bem-vindo(a) à *Amalfis Uniformes*! 🧥✨\nDeixa eu me apresentar: Sou *Eli*, seu assistente virtual 👩🏽‍🦰 aqui na Amalfis. Estou sempre disponível para ajudar você a qualquer momento! 😊\nPrimeiro, gostaria de te conhecer melhor: *Qual é o seu nome?* 🧐`;
+                  const msg = resposta?.resposta.replace(/\\n/g, "\n");
                   // Envia a resposta via WhatsApp
                   await chatbot_services.respondeWhatsApp(
                     from,
