@@ -1,4 +1,4 @@
-const { amalfisCli } = require("../models");
+const { amalfisCli, Sequelize } = require("../models");
 const ChatBot_Services = require("../services/chatBot_Services");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
