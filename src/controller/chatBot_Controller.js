@@ -1,10 +1,13 @@
 const ChatBot_Services = require("../services/chatBot_Services");
 const https = require("https");
+const Fluxo_chatBot = require("../utilities/functions/chatbot/fluxo.js");
 const { amalfisCli } = require("../models/index.js");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "SEU_VERIFY_TOKEN_AQUI";
 const API_URL = process.env.API_URL;
+
+const fluxo_chatbot = new Fluxo_chatBot();
 
 // Função genérica para enviar requisições HTTPS
 const sendHttpsRequest = async (url, method, data, headers) => {
@@ -105,9 +108,8 @@ class ChatBot_Controller {
                 const messageId = message.id || "id não identificado";
                 const messageType = message.type || "tipo não identificado";
 
-                const cliente = amalfisCli.ChatbotCliente.findOne({
-                  where: { numero_contato: from },
-                });
+                const cliente =
+                  fluxo_chatbot.buscaClientePorNumeroContato(from);
                 console.log(cliente);
 
                 // Lida com mensagens de texto
