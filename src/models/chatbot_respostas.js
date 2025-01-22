@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Relacionamento com Mensagens (para rastrear o histórico)
-      ChatbotResposta.hasMany(models.ChatbotMensagem, {
-        foreignKey: "resposta_id",
-        as: "mensagens",
-      });
+      // ChatbotResposta.hasMany(models.ChatbotMensagem, {
+      //   foreignKey: "resposta_id",
+      //   as: "mensagens",
+      // });
     }
   }
 
