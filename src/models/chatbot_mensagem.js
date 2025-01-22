@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Relacionamento com Respostas do Chatbot (para rastrear qual pergunta gerou esta mensagem)
-      ChatbotMensagem.belongsTo(models.ChatbotResposta, {
-        foreignKey: "resposta_id",
-        as: "resposta",
-      });
+      // ChatbotMensagem.belongsTo(models.ChatbotResposta, {
+      //   foreignKey: "resposta_id",
+      //   as: "resposta",
+      // });
     }
   }
 
