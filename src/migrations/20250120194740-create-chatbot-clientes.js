@@ -11,21 +11,27 @@ module.exports = {
       },
       numero_contato: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       nome: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       cnpj: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       empresa: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       qtde_colaborador: {
         type: Sequelize.INTEGER,
+        allowNull: true,
       },
       local_emp: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

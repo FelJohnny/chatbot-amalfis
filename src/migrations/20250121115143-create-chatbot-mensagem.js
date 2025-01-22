@@ -41,6 +41,7 @@ module.exports = {
       },
       conteudo_message: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

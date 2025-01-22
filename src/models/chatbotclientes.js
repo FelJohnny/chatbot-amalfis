@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class ChatbotCliente extends Model {
     static associate(models) {
@@ -7,12 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       ChatbotCliente.hasMany(models.ChatbotSessao, {
         foreignKey: "cliente_id",
         as: "sessoes",
-      });
-
-      // Relacionamento com Avaliacao
-      ChatbotCliente.hasMany(models.ChatbotAvaliacao, {
-        foreignKey: "cliente_id",
-        as: "avaliacoes",
       });
 
       // Relacionamento com Mensagem

@@ -61,43 +61,115 @@ class ChatBot_Controller {
               const messages = change.value.messages || [];
 
               for (const message of messages) {
-                const from = message.from || "número não identificado";
-                const messageId = message.id || "id não identificado";
-                const messageType = message.type || "tipo não identificado";
+                // 1. Identifica o número do cliente e o tipo de mensagem
+                const from = message.from || "número não identificado"; // Número do cliente
+                const messageType = message.type || "tipo não identificado"; // Tipo da mensagem recebida
+                const messageBody =
+                  message.text?.body?.toLowerCase().trim() || ""; // Corpo da mensagem (se texto)
 
-                const cliente =
-                  await chatbot_services.buscaClientePorNumeroContato(from); // Certifique-se que esse método retorna uma Promise.
+                // 2. Busca o cliente pelo número de contato
+                let cliente = await chatbot_clientes.findOne({
+                  where: { numero_contato: from },
+                });
 
-                if (!cliente.status) {
-                  const resposta = await chatbot_services.buscaRespostaCliente(
-                    1
+                if (!cliente) {
+                  // Cria um novo cliente se ele não existir
+                  cliente = await chatbot_clientes.create({
+                    numero_contato: from,
+                    nome: null,
+                    cnpj: null,
+                    empresa: null,
+                    qtde_colaborador: null,
+                    local_emp: null,
+                  });
+                }
+
+                // 3. Verifica se existe uma sessão ativa para o cliente
+                let sessao = await chatbot_sessaos.findOne({
+                  where: { cliente_id: cliente.id, status: true },
+                });
+
+                if (!sessao) {
+                  // Cria uma nova sessão se nenhuma estiver ativa
+                  sessao = await chatbot_sessaos.create({
+                    cliente_id: cliente.id,
+                    atendente_id: null, // Sem atendente inicialmente
+                    status: true, // Sessão ativa
+                  });
+                }
+
+                // 4. Recupera a última mensagem enviada pelo chatbot na sessão
+                const ultimaMensagem = await chatbot_mensagems.findOne({
+                  where: {
+                    cliente_id: cliente.id,
+                    sessao_id: sessao.id,
+                  },
+                  order: [["createdAt", "DESC"]],
+                });
+
+                let proximaPerguntaId;
+
+                if (ultimaMensagem) {
+                  // 5. Recupera a pergunta associada à última mensagem enviada
+                  const respostaAnterior = await chatbot_respostas.findByPk(
+                    ultimaMensagem.resposta_id
                   );
-                  const msg = resposta?.resposta.replace(/\\n/g, "\n");
-                  // Envia a resposta via WhatsApp
+
+                  if (respostaAnterior) {
+                    // Determina a próxima pergunta com base nas respostas possíveis
+                    const respostasPossiveis =
+                      respostaAnterior.respostas_possiveis || {};
+                    proximaPerguntaId =
+                      respostasPossiveis[messageBody] ||
+                      respostaAnterior.resposta_padrao;
+                  }
+                } else {
+                  // 6. Caso seja a primeira interação, inicia com a primeira pergunta
+                  proximaPerguntaId = 1; // ID inicial configurado
+                }
+
+                if (proximaPerguntaId) {
+                  // 7. Busca a próxima pergunta e envia ao cliente
+                  const proximaPergunta = await chatbot_respostas.findByPk(
+                    proximaPerguntaId
+                  );
+
+                  if (proximaPergunta) {
+                    // Envia a próxima pergunta
+                    await chatbot_services.respondeWhatsApp(
+                      from,
+                      proximaPergunta.mensagem,
+                      "text"
+                    );
+
+                    // Registra a mensagem enviada na tabela de mensagens
+                    await chatbot_mensagems.create({
+                      atendente_id: null, // Mensagem enviada pelo chatbot
+                      cliente_id: cliente.id,
+                      sessao_id: sessao.id,
+                      conteudo_message: proximaPergunta.mensagem,
+                      resposta_id: proximaPergunta.id, // Relaciona com a resposta enviada
+                    });
+                  } else {
+                    console.error(
+                      `Pergunta com ID ${proximaPerguntaId} não encontrada.`
+                    );
+                  }
+                } else {
+                  // 8. Caso não haja próxima pergunta configurada
                   await chatbot_services.respondeWhatsApp(
                     from,
-                    // resposta?.resposta,
-                    msg,
+                    "Desculpe, não consegui entender sua solicitação.",
                     "text"
                   );
                 }
-
-                // Lida com mensagens de texto
-                // if (messageType === "text" && message.text) {
-                //   const messageBody = message.text.body || "mensagem vazia";
-
-                //   // Responde mensagem
-                //   // await replyMessage(from, messageType, "ola tudo bem?");
-                // } else {
-                //   console.log(`Tipo de mensagem não tratado: ${messageType}`);
-                // }
               }
             }
           }
         }
       }
 
-      res.sendStatus(200); // Confirma o recebimento
+      res.sendStatus(200); // Confirma o recebimento do webhook
     } catch (error) {
       console.error("Erro ao processar webhook:", error.message);
       res.sendStatus(500);

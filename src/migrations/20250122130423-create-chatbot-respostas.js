@@ -11,9 +11,35 @@ module.exports = {
       },
       mensagem: {
         type: Sequelize.TEXT,
+        allowNull: false,
       },
       status: {
         type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
+      respostas_possiveis: {
+        type: Sequelize.JSONB,
+        allowNull: true, // Mapeia variações de respostas para IDs de perguntas
+      },
+      resposta_padrao: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "chatbot_respostas",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
+      tipo: {
+        type: Sequelize.STRING, // Tipo da resposta (ex.: texto, botão, lista)
+        allowNull: false,
+        defaultValue: "texto",
+      },
+      opcoes: {
+        type: Sequelize.JSONB, // Opções de botões ou listas
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

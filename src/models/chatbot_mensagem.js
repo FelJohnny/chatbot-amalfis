@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class ChatbotMensagem extends Model {
     static associate(models) {
@@ -19,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
       ChatbotMensagem.belongsTo(models.ChatbotSessao, {
         foreignKey: "sessao_id",
         as: "sessao",
+      });
+
+      // Relacionamento com Respostas do Chatbot (para rastrear qual pergunta gerou esta mensagem)
+      ChatbotMensagem.belongsTo(models.ChatbotResposta, {
+        foreignKey: "resposta_id",
+        as: "resposta",
       });
     }
   }

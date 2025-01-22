@@ -21,6 +21,7 @@ module.exports = {
       },
       nome_view: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

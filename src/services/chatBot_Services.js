@@ -44,32 +44,68 @@ const sendHttpsRequest = async (url, method, data, headers) => {
 };
 
 class ChatBot_Services {
+  // Busca cliente por número de contato
   async buscaClientePorNumeroContato(numContato) {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
       where: { numero_contato: numContato },
     });
     if (cliente === null) {
-      console.log("cliente não encontrado");
-      return { status: false, retorno: cliente };
+      console.log("Cliente não encontrado");
+      return { status: false, retorno: null };
     } else {
-      console.log("cliente encontrado");
+      console.log("Cliente encontrado");
       return { status: true, retorno: cliente };
     }
   }
 
+  // Busca resposta por ID
   async buscaRespostaCliente(idResposta) {
-    const resposta = await amalfisCli.chatbot_respostas.findOne({
+    const resposta = await amalfisCli.ChatbotResposta.findOne({
       where: { id: idResposta },
     });
     if (resposta === null) {
-      console.log("resposta não encontrada");
-      return resposta;
+      console.log("Resposta não encontrada");
+      return null;
     } else {
-      console.log("resposta encontrada");
-      return { resposta: resposta.dataValues.mensagem };
+      console.log("Resposta encontrada");
+      return resposta;
     }
   }
 
+  // Busca a próxima resposta com base nas respostas possíveis ou padrão
+  async buscaProximaResposta(idResposta, respostaUsuario) {
+    const resposta = await amalfisCli.ChatbotResposta.findOne({
+      where: { id: idResposta },
+    });
+
+    if (!resposta) {
+      console.log("Resposta atual não encontrada");
+      return null;
+    }
+
+    const respostasPossiveis = resposta.respostas_possiveis || {};
+    const proximaRespostaId =
+      respostasPossiveis[respostaUsuario] || resposta.resposta_padrao;
+
+    if (proximaRespostaId) {
+      const proximaResposta = await amalfisCli.ChatbotResposta.findOne({
+        where: { id: proximaRespostaId },
+      });
+
+      if (proximaResposta) {
+        console.log("Próxima resposta encontrada");
+        return proximaResposta;
+      } else {
+        console.log("Próxima resposta não encontrada");
+        return null;
+      }
+    } else {
+      console.log("Nenhuma próxima resposta configurada");
+      return null;
+    }
+  }
+
+  // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
     try {
       const data = {
@@ -92,6 +128,30 @@ class ChatBot_Services {
       });
     } catch (error) {
       console.error("Erro ao enviar mensagem de texto:", error.message);
+    }
+  }
+
+  // Registra mensagem no histórico
+  async registraMensagem(
+    sessaoId,
+    clienteId,
+    respostaId,
+    conteudoMessage,
+    atendenteId = null
+  ) {
+    try {
+      const mensagem = await amalfisCli.ChatbotMensagem.create({
+        sessao_id: sessaoId,
+        cliente_id: clienteId,
+        resposta_id: respostaId,
+        conteudo_message: conteudoMessage,
+        atendente_id: atendenteId,
+      });
+      console.log("Mensagem registrada com sucesso");
+      return mensagem;
+    } catch (error) {
+      console.error("Erro ao registrar mensagem:", error.message);
+      throw error;
     }
   }
 }
