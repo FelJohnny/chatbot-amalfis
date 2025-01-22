@@ -1,5 +1,6 @@
 const ChatBot_Services = require("../services/chatBot_Services");
 const https = require("https");
+const { amalfisCli } = require("../models/index.js");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "SEU_VERIFY_TOKEN_AQUI";
@@ -104,31 +105,20 @@ class ChatBot_Controller {
                 const messageId = message.id || "id não identificado";
                 const messageType = message.type || "tipo não identificado";
 
+                const cliente = amalfisCli.ChatbotCliente.findOne({
+                  where: { numero_contato: from },
+                });
+                console.log(cliente);
+
                 // Lida com mensagens de texto
                 if (messageType === "text" && message.text) {
                   const messageBody = message.text.body || "mensagem vazia";
-                  console.log(
-                    `Mensagem de texto recebida de ${from}: ${messageBody}`
-                  );
+
                   //reponde mensagem
-                  replyMessage(from, messageType, "ola tudo bem?");
+                  // replyMessage(from, messageType, "ola tudo bem?");
                 }
                 // Lida com respostas de botões
-                else if (messageType === "interactive" && message.interactive) {
-                  const buttonReply = message.interactive.button_reply || {};
-                  const replyId = buttonReply.id || "null";
-                  const replyTitle = buttonReply.title || "null";
-
-                  console.log(
-                    `Resposta de botão recebida de ${from}: ID=${replyId}, Título=${replyTitle}`
-                  );
-                  //reponde mensagem
-                  replyMessage(
-                    from,
-                    messageType,
-                    `voce selecionou ${replyTitle}`
-                  );
-                } else {
+                else {
                   console.log(`Tipo de mensagem não tratado: ${messageType}`);
                 }
               });
