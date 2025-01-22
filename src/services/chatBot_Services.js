@@ -1,6 +1,7 @@
 const { amalfisCli } = require("../models/index.js");
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const API_URL = process.env.API_URL;
+const https = require("https");
 
 // Função genérica para enviar requisições HTTPS
 const sendHttpsRequest = async (url, method, data, headers) => {
@@ -41,6 +42,7 @@ const sendHttpsRequest = async (url, method, data, headers) => {
     req.end();
   });
 };
+
 class ChatBot_Services {
   async buscaClientePorNumeroContato(numContato) {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
@@ -68,14 +70,12 @@ class ChatBot_Services {
     }
   }
 
-  async respondeWhatsApp(to, message) {
-    console.log(message);
-
+  async respondeWhatsApp(to, message, type) {
     try {
       const data = {
         messaging_product: "whatsapp",
         to,
-        type: "text",
+        type: type,
         text: { body: message },
       };
       const headers = {
