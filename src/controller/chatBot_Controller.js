@@ -1,3 +1,4 @@
+const { amalfisCli } = require("../models");
 const ChatBot_Services = require("../services/chatBot_Services");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
@@ -68,13 +69,13 @@ class ChatBot_Controller {
                   message.text?.body?.toLowerCase().trim() || ""; // Corpo da mensagem (se texto)
 
                 // 2. Busca o cliente pelo número de contato
-                let cliente = await chatbot_clientes.findOne({
+                let cliente = await amalfisCli.chatbot_clientes.findOne({
                   where: { numero_contato: from },
                 });
 
                 if (!cliente) {
                   // Cria um novo cliente se ele não existir
-                  cliente = await chatbot_clientes.create({
+                  cliente = await amalfisCli.chatbot_clientes.create({
                     numero_contato: from,
                     nome: null,
                     cnpj: null,
