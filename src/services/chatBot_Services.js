@@ -78,11 +78,22 @@ class ChatBot_Services {
         type: type,
         text: { body: message },
       };
+
       const headers = {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
         "Content-Type": "application/json",
       };
-      const response = await sendHttpsRequest(API_URL, "POST", data, headers);
+
+      // Converte o objeto `data` para JSON antes de enviar
+      const jsonData = JSON.stringify(data);
+
+      const response = await sendHttpsRequest(
+        API_URL,
+        "POST",
+        jsonData,
+        headers
+      );
+
       console.log({
         message: "Mensagem respondida com sucesso!",
         data: response,
