@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      menssagem: {
+      mensagem: {
         type: Sequelize.TEXT,
       },
       status: {

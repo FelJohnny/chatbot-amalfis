@@ -66,7 +66,7 @@ class ChatBot_Services {
       return resposta;
     } else {
       console.log("resposta encontrada");
-      return { resposta: resposta.dataValues.menssagem };
+      return { resposta: resposta.dataValues.mensagem };
     }
   }
 

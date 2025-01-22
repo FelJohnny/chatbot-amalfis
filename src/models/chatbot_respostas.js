@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   chatbot_respostas.init(
     {
-      menssagem: DataTypes.STRING,
+      mensagem: DataTypes.STRING,
       status: DataTypes.BOOLEAN,
     },
     {
