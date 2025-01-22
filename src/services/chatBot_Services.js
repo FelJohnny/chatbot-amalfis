@@ -76,7 +76,7 @@ class ChatBot_Services {
         messaging_product: "whatsapp",
         to,
         type: type,
-        text: { body: message },
+        text: { body: JSON.stringify(message) },
       };
 
       const headers = {
