@@ -100,21 +100,24 @@ class ChatBot_Controller {
                 }
 
                 // 4. Recupera a última mensagem enviada pelo chatbot na sessão
-                const ultimaMensagem = await chatbot_mensagems.findOne({
-                  where: {
-                    cliente_id: cliente.id,
-                    sessao_id: sessao.id,
-                  },
-                  order: [["createdAt", "DESC"]],
-                });
+                const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne(
+                  {
+                    where: {
+                      cliente_id: cliente.id,
+                      sessao_id: sessao.id,
+                    },
+                    order: [["createdAt", "DESC"]],
+                  }
+                );
 
                 let proximaPerguntaId;
 
                 if (ultimaMensagem) {
                   // 5. Recupera a pergunta associada à última mensagem enviada
-                  const respostaAnterior = await chatbot_respostas.findByPk(
-                    ultimaMensagem.resposta_id
-                  );
+                  const respostaAnterior =
+                    await amalfisCli.ChatbotResposta.findByPk(
+                      ultimaMensagem.resposta_id
+                    );
 
                   if (respostaAnterior) {
                     // Determina a próxima pergunta com base nas respostas possíveis
@@ -131,9 +134,10 @@ class ChatBot_Controller {
 
                 if (proximaPerguntaId) {
                   // 7. Busca a próxima pergunta e envia ao cliente
-                  const proximaPergunta = await chatbot_respostas.findByPk(
-                    proximaPerguntaId
-                  );
+                  const proximaPergunta =
+                    await amalfisCli.ChatbotResposta.findByPk(
+                      proximaPerguntaId
+                    );
 
                   if (proximaPergunta) {
                     // Envia a próxima pergunta
@@ -144,7 +148,7 @@ class ChatBot_Controller {
                     );
 
                     // Registra a mensagem enviada na tabela de mensagens
-                    await chatbot_mensagems.create({
+                    await amalfisCli.ChatbotMensagem.create({
                       atendente_id: null, // Mensagem enviada pelo chatbot
                       cliente_id: cliente.id,
                       sessao_id: sessao.id,
