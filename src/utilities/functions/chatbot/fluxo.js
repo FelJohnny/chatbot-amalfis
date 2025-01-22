@@ -1,3 +1,5 @@
+const { amalfisCli } = require("../../../models");
+
 class Fluxo_chatBot {
   async buscaClientePorNumeroContato(numContato) {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
