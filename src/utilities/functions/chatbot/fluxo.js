@@ -5,7 +5,13 @@ class Fluxo_chatBot {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
       where: { numero_contato: numContato },
     });
-    return cliente;
+    if (cliente === null) {
+      console.log("cliente não encontrado");
+      return { status: false, retorno: cliente };
+    } else {
+      console.log("cliente encontrado");
+      return { status: true, retorno: cliente };
+    }
   }
 }
 
