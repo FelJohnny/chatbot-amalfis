@@ -69,6 +69,8 @@ class ChatBot_Services {
   }
 
   async respondeWhatsApp(to, message) {
+    console.log(message);
+
     try {
       const data = {
         messaging_product: "whatsapp",

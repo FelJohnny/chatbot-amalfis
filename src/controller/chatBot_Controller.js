@@ -73,10 +73,12 @@ class ChatBot_Controller {
                   const resposta = await chatbot_services.buscaRespostaCliente(
                     1
                   );
-                  console.log(resposta);
 
                   // Envia a resposta via WhatsApp
-                  // await chatbot_services.respondeWhatsApp(from, resposta);
+                  await chatbot_services.respondeWhatsApp(
+                    from,
+                    resposta?.resposta
+                  );
                 }
 
                 // Lida com mensagens de texto
