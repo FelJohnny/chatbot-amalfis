@@ -1,52 +1,11 @@
 const ChatBot_Services = require("../services/chatBot_Services");
 const https = require("https");
-const Fluxo_chatBot = require("../utilities/functions/chatbot/fluxo.js");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "SEU_VERIFY_TOKEN_AQUI";
 const API_URL = process.env.API_URL;
 
-const fluxo_chatbot = new Fluxo_chatBot();
-
-// Função genérica para enviar requisições HTTPS
-const sendHttpsRequest = async (url, method, data, headers) => {
-  return new Promise((resolve, reject) => {
-    const parsedUrl = new URL(url);
-
-    const options = {
-      hostname: parsedUrl.hostname,
-      path: parsedUrl.pathname + parsedUrl.search,
-      method,
-      headers,
-    };
-
-    const req = https.request(options, (res) => {
-      let responseData = "";
-
-      res.on("data", (chunk) => {
-        responseData += chunk;
-      });
-
-      res.on("end", () => {
-        try {
-          resolve(JSON.parse(responseData));
-        } catch (err) {
-          reject(new Error("Erro ao parsear a resposta: " + err.message));
-        }
-      });
-    });
-
-    req.on("error", (err) => {
-      reject(new Error("Erro na requisição: " + err.message));
-    });
-
-    if (data) {
-      req.write(JSON.stringify(data));
-    }
-
-    req.end();
-  });
-};
+const chatbot_services = new ChatBot_Services();
 
 //resposta de mensagens
 const replyMessage = async (to, type, message) => {
@@ -108,9 +67,13 @@ class ChatBot_Controller {
                 const messageType = message.type || "tipo não identificado";
 
                 const cliente =
-                  fluxo_chatbot.buscaClientePorNumeroContato(from);
+                  chatbot_services.buscaClientePorNumeroContato(from);
 
                 if (!cliente.status) {
+                  const resposta = chatbot_services.buscaRespostaCliente(1);
+                  console.log(resposta);
+
+                  // chatbot_services.respondeWhatsApp(from,resposta)
                 }
 
                 // Lida com mensagens de texto

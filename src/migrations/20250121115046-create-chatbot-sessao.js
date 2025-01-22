@@ -11,7 +11,7 @@ module.exports = {
       },
       cliente_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "chatbot_clientes",
           key: "id",
@@ -21,7 +21,7 @@ module.exports = {
       },
       atendente_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "chatbot_atendentes",
           key: "id",
