@@ -63,10 +63,8 @@ class ChatBot_Services {
       console.log("resposta não encontrada");
       return resposta;
     } else {
-      console.log({ resposta: resposta.dataValues.mensagem });
-
       console.log("resposta encontrada");
-      return resposta;
+      return { resposta: resposta.dataValues.mensagem };
     }
   }
 

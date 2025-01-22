@@ -71,7 +71,7 @@ class ChatBot_Controller {
 
                 if (!cliente.status) {
                   const resposta = chatbot_services.buscaRespostaCliente(1);
-                  // console.log(resposta);
+                  console.log(resposta);
 
                   // chatbot_services.respondeWhatsApp(from,resposta)
                 }
