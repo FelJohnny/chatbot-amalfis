@@ -32,7 +32,16 @@ module.exports = (sequelize, DataTypes) => {
 
   ChatbotMensagem.init(
     {
-      conteudo_message: DataTypes.TEXT,
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, // Gera automaticamente um UUID
+        primaryKey: true,
+        allowNull: false,
+      },
+      conteudo_message: {
+        type: DataTypes.TEXT, // Permite mensagens longas
+        allowNull: false,
+      },
     },
     {
       sequelize,

@@ -62,19 +62,16 @@ class ChatBot_Controller {
               const messages = change.value.messages || [];
 
               for (const message of messages) {
-                // 1. Identifica o número do cliente e o tipo de mensagem
-                const from = message.from || "número não identificado"; // Número do cliente
-                const messageType = message.type || "tipo não identificado"; // Tipo da mensagem recebida
+                const from = message.from || "número não identificado";
                 const messageBody =
-                  message.text?.body?.toLowerCase().trim() || ""; // Corpo da mensagem (se texto)
+                  message.text?.body?.toLowerCase().trim() || "";
 
-                // 2. Busca o cliente pelo número de contato
+                // 1. Busca ou cria o cliente
                 let cliente = await amalfisCli.ChatbotCliente.findOne({
                   where: { numero_contato: from },
                 });
 
                 if (!cliente) {
-                  // Cria um novo cliente se ele não existir
                   cliente = await amalfisCli.ChatbotCliente.create({
                     numero_contato: from,
                     nome: null,
@@ -85,35 +82,23 @@ class ChatBot_Controller {
                   });
                 }
 
-                // 3. Verifica se existe uma sessão ativa para o cliente
+                // 2. Busca ou cria a sessão
                 let sessao = await amalfisCli.ChatbotSessao.findOne({
                   where: { cliente_id: cliente.id, status: true },
-                  attributes: [
-                    "id",
-                    "cliente_id",
-                    "atendente_id",
-                    "status",
-                    "createdAt",
-                    "updatedAt",
-                  ],
                 });
 
                 if (!sessao) {
-                  // Cria uma nova sessão se nenhuma estiver ativa
                   sessao = await amalfisCli.ChatbotSessao.create({
                     cliente_id: cliente.id,
-                    atendente_id: null, // Sem atendente inicialmente
-                    status: true, // Sessão ativa
+                    atendente_id: null,
+                    status: true,
                   });
                 }
 
-                // 4. Recupera a última mensagem enviada pelo chatbot na sessão
+                // 3. Recupera a última mensagem
                 const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne(
                   {
-                    where: {
-                      cliente_id: cliente.id,
-                      sessao_id: sessao.id,
-                    },
+                    where: { cliente_id: cliente.id, sessao_id: sessao.id },
                     order: [["createdAt", "DESC"]],
                   }
                 );
@@ -121,14 +106,13 @@ class ChatBot_Controller {
                 let proximaPerguntaId;
 
                 if (ultimaMensagem) {
-                  // 5. Recupera a pergunta associada à última mensagem enviada
+                  // Recupera a próxima pergunta
                   const respostaAnterior =
                     await amalfisCli.ChatbotResposta.findByPk(
                       ultimaMensagem.resposta_id
                     );
 
                   if (respostaAnterior) {
-                    // Determina a próxima pergunta com base nas respostas possíveis
                     const respostasPossiveis =
                       respostaAnterior.respostas_possiveis || {};
                     proximaPerguntaId =
@@ -136,12 +120,12 @@ class ChatBot_Controller {
                       respostaAnterior.resposta_padrao;
                   }
                 } else {
-                  // 6. Caso seja a primeira interação, inicia com a primeira pergunta
-                  proximaPerguntaId = 1; // ID inicial configurado
+                  // Primeira interação
+                  proximaPerguntaId = 1;
                 }
 
                 if (proximaPerguntaId) {
-                  // 7. Busca a próxima pergunta e envia ao cliente
+                  // Busca a próxima pergunta
                   const proximaPergunta =
                     await amalfisCli.ChatbotResposta.findByPk(
                       proximaPerguntaId
@@ -155,26 +139,26 @@ class ChatBot_Controller {
                       "text"
                     );
 
-                    // Registra a mensagem enviada na tabela de mensagens
+                    // Registra a mensagem enviada
                     await amalfisCli.ChatbotMensagem.create({
-                      atendente_id: null, // Mensagem enviada pelo chatbot
+                      id: Sequelize.UUIDV4(), // Garante que o ID é gerado corretamente
                       cliente_id: cliente.id,
                       sessao_id: sessao.id,
-                      conteudo_message: proximaPergunta.mensagem, // Agora pode armazenar mensagens maiores
-                      resposta_id: proximaPergunta.id, // Relaciona com a resposta enviada
+                      conteudo_message: proximaPergunta.mensagem,
+                      resposta_id: proximaPergunta.id,
                     });
                   } else {
                     console.error(
-                      `Pergunta com ID ${proximaPerguntaId} não encontrada.`
+                      `Próxima pergunta com ID ${proximaPerguntaId} não encontrada.`
                     );
+                    break; // Finaliza o loop se não encontrar a próxima pergunta
                   }
                 } else {
-                  // 8. Caso não haja próxima pergunta configurada
-                  await chatbot_services.respondeWhatsApp(
-                    from,
-                    "Desculpe, não consegui entender sua solicitação.",
-                    "text"
+                  // Fim do fluxo
+                  console.log(
+                    "Nenhuma próxima pergunta configurada. Finalizando interação."
                   );
+                  break;
                 }
               }
             }
@@ -182,7 +166,7 @@ class ChatBot_Controller {
         }
       }
 
-      res.sendStatus(200); // Confirma o recebimento do webhook
+      res.sendStatus(200);
     } catch (error) {
       console.error("Erro ao processar webhook:", error.message);
       res.sendStatus(500);
