@@ -30,11 +30,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "usuario_id",
       });
 
-      // Relacionamento com Sessao do Chatbot (Um para Muitos)
-      Usuario.hasMany(models.ChatbotSessao, {
-        foreignKey: "usuario_id",
-        as: "sessoes",
-      });
+      // // Relacionamento com Sessao do Chatbot (Um para Muitos)
+      // Usuario.hasMany(models.ChatbotSessao, {
+      //   foreignKey: "usuario_id",
+      //   as: "sessoes",
+      // });
     }
   }
 
