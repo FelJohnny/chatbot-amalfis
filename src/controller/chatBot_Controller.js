@@ -70,7 +70,7 @@ class ChatBot_Controller {
 
                 if (!cliente.status) {
                   const resposta = await chatbot_services.buscaRespostaCliente(
-                    2
+                    1
                   );
 
                   // Envia a resposta via WhatsApp
