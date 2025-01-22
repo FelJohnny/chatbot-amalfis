@@ -31,9 +31,14 @@ module.exports = (sequelize, DataTypes) => {
 
   ChatbotSessao.init(
     {
-      status: DataTypes.BOOLEAN,
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       cliente_id: DataTypes.INTEGER,
       atendente_id: DataTypes.UUID,
+      status: DataTypes.BOOLEAN,
     },
     {
       sequelize,
