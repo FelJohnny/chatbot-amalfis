@@ -86,13 +86,13 @@ class ChatBot_Controller {
                 }
 
                 // 3. Verifica se existe uma sessão ativa para o cliente
-                let sessao = await chatbot_sessaos.findOne({
+                let sessao = await amalfisCli.ChatbotSessao.findOne({
                   where: { cliente_id: cliente.id, status: true },
                 });
 
                 if (!sessao) {
                   // Cria uma nova sessão se nenhuma estiver ativa
-                  sessao = await chatbot_sessaos.create({
+                  sessao = await amalfisCli.ChatbotSessao.create({
                     cliente_id: cliente.id,
                     atendente_id: null, // Sem atendente inicialmente
                     status: true, // Sessão ativa
