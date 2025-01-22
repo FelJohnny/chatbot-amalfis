@@ -56,41 +56,42 @@ class ChatBot_Controller {
       const body = req.body;
 
       if (body.object === "whatsapp_business_account") {
-        body.entry.forEach((entry) => {
-          entry.changes.forEach((change) => {
+        for (const entry of body.entry) {
+          for (const change of entry.changes) {
             if (change.field === "messages") {
               const messages = change.value.messages || [];
 
-              messages.forEach((message) => {
+              for (const message of messages) {
                 const from = message.from || "número não identificado";
                 const messageId = message.id || "id não identificado";
                 const messageType = message.type || "tipo não identificado";
 
                 const cliente =
-                  chatbot_services.buscaClientePorNumeroContato(from);
+                  await chatbot_services.buscaClientePorNumeroContato(from); // Certifique-se que esse método retorna uma Promise.
 
                 if (!cliente.status) {
-                  const resposta = chatbot_services.buscaRespostaCliente(1);
+                  const resposta = await chatbot_services.buscaRespostaCliente(
+                    1
+                  );
                   console.log(resposta);
 
-                  // chatbot_services.respondeWhatsApp(from,resposta)
+                  // Envia a resposta via WhatsApp
+                  // await chatbot_services.respondeWhatsApp(from, resposta);
                 }
 
                 // Lida com mensagens de texto
                 // if (messageType === "text" && message.text) {
                 //   const messageBody = message.text.body || "mensagem vazia";
 
-                //   //reponde mensagem
-                //   // replyMessage(from, messageType, "ola tudo bem?");
-                // }
-                // Lida com respostas de botões
-                // else {
+                //   // Responde mensagem
+                //   // await replyMessage(from, messageType, "ola tudo bem?");
+                // } else {
                 //   console.log(`Tipo de mensagem não tratado: ${messageType}`);
                 // }
-              });
+              }
             }
-          });
-        });
+          }
+        }
       }
 
       res.sendStatus(200); // Confirma o recebimento
