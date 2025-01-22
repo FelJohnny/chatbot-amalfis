@@ -160,7 +160,7 @@ class ChatBot_Controller {
                       atendente_id: null, // Mensagem enviada pelo chatbot
                       cliente_id: cliente.id,
                       sessao_id: sessao.id,
-                      conteudo_message: proximaPergunta.mensagem,
+                      conteudo_message: proximaPergunta.mensagem, // Agora pode armazenar mensagens maiores
                       resposta_id: proximaPergunta.id, // Relaciona com a resposta enviada
                     });
                   } else {

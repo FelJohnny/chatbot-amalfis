@@ -40,7 +40,7 @@ module.exports = {
         onUpdate: "CASCADE",
       },
       conteudo_message: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       createdAt: {

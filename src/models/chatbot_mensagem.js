@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 
   ChatbotMensagem.init(
     {
-      conteudo_message: DataTypes.STRING,
+      conteudo_message: DataTypes.TEXT,
     },
     {
       sequelize,

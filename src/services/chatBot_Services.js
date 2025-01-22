@@ -140,11 +140,12 @@ class ChatBot_Services {
     atendenteId = null
   ) {
     try {
+      // Adicionado suporte para `conteudo_message` como `TEXT`
       const mensagem = await amalfisCli.ChatbotMensagem.create({
         sessao_id: sessaoId,
         cliente_id: clienteId,
         resposta_id: respostaId,
-        conteudo_message: conteudoMessage,
+        conteudo_message: conteudoMessage, // Permite mensagens longas
         atendente_id: atendenteId,
       });
       console.log("Mensagem registrada com sucesso");
