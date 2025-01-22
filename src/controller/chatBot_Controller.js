@@ -109,19 +109,21 @@ class ChatBot_Controller {
 
                 const cliente =
                   fluxo_chatbot.buscaClientePorNumeroContato(from);
-                console.log(cliente);
+
+                if (!cliente.status) {
+                }
 
                 // Lida com mensagens de texto
-                if (messageType === "text" && message.text) {
-                  const messageBody = message.text.body || "mensagem vazia";
+                // if (messageType === "text" && message.text) {
+                //   const messageBody = message.text.body || "mensagem vazia";
 
-                  //reponde mensagem
-                  // replyMessage(from, messageType, "ola tudo bem?");
-                }
+                //   //reponde mensagem
+                //   // replyMessage(from, messageType, "ola tudo bem?");
+                // }
                 // Lida com respostas de botões
-                else {
-                  console.log(`Tipo de mensagem não tratado: ${messageType}`);
-                }
+                // else {
+                //   console.log(`Tipo de mensagem não tratado: ${messageType}`);
+                // }
               });
             }
           });

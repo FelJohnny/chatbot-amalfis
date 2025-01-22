@@ -30,7 +30,9 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   ChatbotSessao.init(
-    {},
+    {
+      status: DataTypes.BOOLEAN,
+    },
     {
       sequelize,
       modelName: "ChatbotSessao",
