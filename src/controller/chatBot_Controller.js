@@ -69,13 +69,13 @@ class ChatBot_Controller {
                   message.text?.body?.toLowerCase().trim() || ""; // Corpo da mensagem (se texto)
 
                 // 2. Busca o cliente pelo número de contato
-                let cliente = await amalfisCli.chatbot_clientes.findOne({
+                let cliente = await amalfisCli.ChatbotCliente.findOne({
                   where: { numero_contato: from },
                 });
 
                 if (!cliente) {
                   // Cria um novo cliente se ele não existir
-                  cliente = await amalfisCli.chatbot_clientes.create({
+                  cliente = await amalfisCli.ChatbotCliente.create({
                     numero_contato: from,
                     nome: null,
                     cnpj: null,
