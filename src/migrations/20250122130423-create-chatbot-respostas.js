@@ -9,8 +9,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      mensagem: {
-        type: Sequelize.STRING,
+      menssagem: {
+        type: Sequelize.TEXT,
       },
       status: {
         type: Sequelize.BOOLEAN,
