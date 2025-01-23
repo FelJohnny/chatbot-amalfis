@@ -133,19 +133,19 @@ class ChatBot_Controller {
                     );
 
                   if (proximaPergunta) {
+                    const mensagemFormatada = proximaPergunta.mensagem.replace(
+                      /\n/g,
+                      "\n"
+                    );
                     // Envia a próxima pergunta
                     await chatbot_services.respondeWhatsApp(
                       from,
-                      proximaPergunta.mensagem,
+                      // proximaPergunta.mensagem,
+                      mensagemFormatada,
                       "text"
                     );
 
                     // Registra a mensagem enviada
-                    console.log(uuidv4());
-                    console.log(cliente.id);
-                    console.log(sessao.id);
-                    console.log(proximaPergunta.mensagem);
-                    console.log(proximaPergunta.id);
                     await amalfisCli.ChatbotMensagem.create({
                       id: uuidv4(), // Gera um UUID válido usando uuidv4
                       cliente_id: cliente.id,
