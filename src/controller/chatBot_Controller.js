@@ -133,17 +133,10 @@ class ChatBot_Controller {
                     );
 
                   if (proximaPergunta) {
-                    const mensagemFormatada = proximaPergunta.mensagem.replace(
-                      /\n/g,
-                      "\\n"
-                    );
-                    console.log(mensagemFormatada);
-
                     // Envia a próxima pergunta
                     await chatbot_services.respondeWhatsApp(
                       from,
-                      // proximaPergunta.mensagem,
-                      mensagemFormatada,
+                      proximaPergunta.mensagem,
                       "text"
                     );
 
