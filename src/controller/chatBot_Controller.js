@@ -63,103 +63,149 @@ class ChatBot_Controller {
               const messages = change.value.messages || [];
 
               for (const message of messages) {
+                // Identifica o número do cliente e a mensagem recebida
                 const from = message.from || "número não identificado";
                 const messageBody =
-                  message.text?.body?.toLowerCase().trim() || "";
+                  message.text?.body?.toLowerCase().trim() || // Texto simples
+                  message.button?.text?.toLowerCase().trim() || // Botões interativos
+                  message.interactive?.button_reply?.id || // Botão com ID
+                  message.interactive?.list_reply?.id || // Lista com ID
+                  "";
 
                 // 1. Busca ou cria o cliente
-                let cliente = await amalfisCli.ChatbotCliente.findOne({
-                  where: { numero_contato: from },
-                });
-
-                if (!cliente) {
-                  cliente = await amalfisCli.ChatbotCliente.create({
-                    numero_contato: from,
-                    nome: null,
-                    cnpj: null,
-                    empresa: null,
-                    qtde_colaborador: null,
-                    local_emp: null,
-                  });
+                let cliente =
+                  await chatbot_services.buscaClientePorNumeroContato(from);
+                if (!cliente.status) {
+                  // Cria o cliente caso não exista
+                  cliente = {
+                    status: true,
+                    retorno: await amalfisCli.ChatbotCliente.create({
+                      numero_contato: from,
+                      nome: null,
+                      cnpj: null,
+                      empresa: null,
+                      qtde_colaborador: null,
+                      local_emp: null,
+                    }),
+                  };
+                  console.log("Novo cliente criado");
                 }
 
                 // 2. Busca ou cria a sessão
                 let sessao = await amalfisCli.ChatbotSessao.findOne({
-                  where: { cliente_id: cliente.id, status: true },
+                  where: { cliente_id: cliente.retorno.id, status: true },
                 });
 
                 if (!sessao) {
                   sessao = await amalfisCli.ChatbotSessao.create({
-                    cliente_id: cliente.id,
-                    atendente_id: null,
+                    cliente_id: cliente.retorno.id,
+                    atendente_id: null, // Sessão sem atendente inicial
                     status: true,
                   });
+                  console.log("Nova sessão criada");
                 }
 
                 // 3. Recupera a última mensagem
                 const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne(
                   {
-                    where: { cliente_id: cliente.id, sessao_id: sessao.id },
+                    where: {
+                      cliente_id: cliente.retorno.id,
+                      sessao_id: sessao.id,
+                    },
                     order: [["createdAt", "DESC"]],
                   }
                 );
 
-                let proximaPerguntaId;
+                let proximaPergunta;
 
                 if (ultimaMensagem) {
-                  // Recupera a próxima pergunta
-                  const respostaAnterior =
-                    await amalfisCli.ChatbotResposta.findByPk(
-                      ultimaMensagem.resposta_id
-                    );
-
-                  if (respostaAnterior) {
-                    const respostasPossiveis =
-                      respostaAnterior.respostas_possiveis || {};
-                    proximaPerguntaId =
-                      respostasPossiveis[messageBody] ||
-                      respostaAnterior.resposta_padrao;
-                  }
+                  // 4. Busca a próxima resposta com base na última mensagem
+                  proximaPergunta = await chatbot_services.buscaProximaResposta(
+                    ultimaMensagem.resposta_id,
+                    messageBody
+                  );
                 } else {
                   // Primeira interação
-                  proximaPerguntaId = 1;
+                  proximaPergunta = await chatbot_services.buscaRespostaCliente(
+                    1
+                  ); // ID inicial
                 }
 
-                if (proximaPerguntaId) {
-                  // Busca a próxima pergunta
-                  const proximaPergunta =
-                    await amalfisCli.ChatbotResposta.findByPk(
-                      proximaPerguntaId
-                    );
-
-                  if (proximaPergunta) {
-                    // Envia a próxima pergunta
+                if (proximaPergunta) {
+                  // 5. Envia a próxima mensagem de acordo com o tipo
+                  if (proximaPergunta.tipo === "texto") {
+                    // Mensagem de texto simples
                     await chatbot_services.respondeWhatsApp(
                       from,
                       proximaPergunta.mensagem,
                       "text"
                     );
+                  } else if (proximaPergunta.tipo === "button") {
+                    // Envia botões interativos
+                    const botoes = proximaPergunta.opcoes.map((opcao) => ({
+                      type: "reply",
+                      reply: {
+                        id: opcao.value,
+                        title: opcao.label,
+                      },
+                    }));
 
-                    // Registra a mensagem enviada
-                    await amalfisCli.ChatbotMensagem.create({
-                      id: uuidv4(), // Gera um UUID válido usando uuidv4
-                      cliente_id: cliente.id,
-                      sessao_id: sessao.id,
-                      conteudo_message: proximaPergunta.mensagem,
-                      resposta_id: proximaPergunta.id,
+                    await chatbot_services.respondeWhatsApp(from, {
+                      type: "interactive",
+                      interactive: {
+                        type: "button",
+                        body: {
+                          text: proximaPergunta.mensagem,
+                        },
+                        action: {
+                          buttons: botoes,
+                        },
+                      },
                     });
-                  } else {
-                    console.error(
-                      `Próxima pergunta com ID ${proximaPerguntaId} não encontrada.`
-                    );
-                    break; // Finaliza o loop se não encontrar a próxima pergunta
+                  } else if (proximaPergunta.tipo === "list") {
+                    // Envia listas interativas
+                    const listaItens = proximaPergunta.opcoes.map((opcao) => ({
+                      id: opcao.value,
+                      title: opcao.label,
+                    }));
+
+                    await chatbot_services.respondeWhatsApp(from, {
+                      type: "interactive",
+                      interactive: {
+                        type: "list",
+                        header: {
+                          type: "text",
+                          text: proximaPergunta.mensagem,
+                        },
+                        body: {
+                          text: "Selecione uma das opções abaixo:",
+                        },
+                        footer: {
+                          text: "Escolha com sabedoria!",
+                        },
+                        action: {
+                          sections: [
+                            {
+                              title: "Opções",
+                              rows: listaItens,
+                            },
+                          ],
+                        },
+                      },
+                    });
                   }
-                } else {
-                  // Fim do fluxo
-                  console.log(
-                    "Nenhuma próxima pergunta configurada. Finalizando interação."
+
+                  // 6. Registra a mensagem enviada
+                  await chatbot_services.registraMensagem(
+                    sessao.id,
+                    cliente.retorno.id,
+                    proximaPergunta.id,
+                    proximaPergunta.mensagem
                   );
-                  break;
+                } else {
+                  console.log(
+                    "Fim do fluxo ou próxima pergunta não encontrada."
+                  );
                 }
               }
             }
@@ -167,7 +213,7 @@ class ChatBot_Controller {
         }
       }
 
-      res.sendStatus(200);
+      res.sendStatus(200); // Confirma o recebimento do webhook
     } catch (error) {
       console.error("Erro ao processar webhook:", error.message);
       res.sendStatus(500);

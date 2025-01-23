@@ -49,7 +49,7 @@ class ChatBot_Services {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
       where: { numero_contato: numContato },
     });
-    if (cliente === null) {
+    if (!cliente) {
       console.log("Cliente não encontrado");
       return { status: false, retorno: null };
     } else {
@@ -58,12 +58,26 @@ class ChatBot_Services {
     }
   }
 
+  // Cria novo cliente
+  async criaCliente(numeroContato) {
+    const cliente = await amalfisCli.ChatbotCliente.create({
+      numero_contato: numeroContato,
+      nome: null,
+      cnpj: null,
+      empresa: null,
+      qtde_colaborador: null,
+      local_emp: null,
+    });
+    console.log("Novo cliente criado");
+    return cliente;
+  }
+
   // Busca resposta por ID
   async buscaRespostaCliente(idResposta) {
     const resposta = await amalfisCli.ChatbotResposta.findOne({
       where: { id: idResposta },
     });
-    if (resposta === null) {
+    if (!resposta) {
       console.log("Resposta não encontrada");
       return null;
     } else {
@@ -107,13 +121,16 @@ class ChatBot_Services {
 
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
-    const msg = message.replace(/\\n/g, "\n");
+    // Verifica se é texto ou mensagem interativa
+    const msg =
+      typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
+
     try {
       const data = {
         messaging_product: "whatsapp",
         to,
         type: type,
-        text: { body: msg },
+        ...(type === "text" ? { text: { body: msg } } : { ...msg }),
       };
 
       const headers = {
