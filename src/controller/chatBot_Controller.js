@@ -189,15 +189,21 @@ class ChatBot_Controller {
                   }
 
                   // 6. Registra a mensagem enviada
-                  await chatbot_services.registraMensagem(
-                    sessao.id,
-                    cliente.retorno.id,
-                    proximaPergunta.id,
-                    proximaPergunta.mensagem
-                  );
+                  try {
+                    await chatbot_services.registraMensagem(
+                      sessao.id,
+                      cliente.retorno.id,
+                      proximaPergunta.id,
+                      proximaPergunta.mensagem
+                    );
+                  } catch (error) {
+                    console.error(
+                      `Erro ao registrar mensagem com resposta_id ${proximaPergunta.id}: ${error.message}`
+                    );
+                  }
                 } else {
                   console.log(
-                    "Fim do fluxo ou próxima pergunta não encontrada."
+                    "Fim do fluxo ou próxima pergunta não encontrada. Encerrando interação."
                   );
                 }
               }

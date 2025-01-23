@@ -162,13 +162,17 @@ class ChatBot_Services {
     conteudoMessage,
     atendenteId = null
   ) {
+    if (!respostaId) {
+      console.error("resposta_id está ausente ao registrar mensagem.");
+      throw new Error("resposta_id é obrigatório para registrar a mensagem.");
+    }
+
     try {
-      // Adicionado suporte para `conteudo_message` como `TEXT`
       const mensagem = await amalfisCli.ChatbotMensagem.create({
         sessao_id: sessaoId,
         cliente_id: clienteId,
         resposta_id: respostaId,
-        conteudo_message: conteudoMessage, // Permite mensagens longas
+        conteudo_message: conteudoMessage,
         atendente_id: atendenteId,
       });
       console.log("Mensagem registrada com sucesso");
