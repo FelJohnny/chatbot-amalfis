@@ -107,13 +107,13 @@ class ChatBot_Services {
 
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
-    const mensagemFormatada = message.replace(/\n/g, "\\n");
+    const msg = message.replace(/\\n/g, "\n");
     try {
       const data = {
         messaging_product: "whatsapp",
         to,
         type: type,
-        text: { body: mensagemFormatada },
+        text: { body: msg },
       };
 
       const headers = {
