@@ -63,7 +63,6 @@ class ChatBot_Controller {
               const messages = change.value.messages || [];
 
               for (const message of messages) {
-                // Identifica o número do cliente e a mensagem recebida
                 const from = message.from || "número não identificado";
                 const messageBody =
                   message.text?.body?.toLowerCase().trim() || // Texto simples
@@ -76,17 +75,9 @@ class ChatBot_Controller {
                 let cliente =
                   await chatbot_services.buscaClientePorNumeroContato(from);
                 if (!cliente.status) {
-                  // Cria o cliente caso não exista
                   cliente = {
                     status: true,
-                    retorno: await amalfisCli.ChatbotCliente.create({
-                      numero_contato: from,
-                      nome: null,
-                      cnpj: null,
-                      empresa: null,
-                      qtde_colaborador: null,
-                      local_emp: null,
-                    }),
+                    retorno: await chatbot_services.criaCliente(from),
                   };
                   console.log("Novo cliente criado");
                 }
@@ -99,7 +90,7 @@ class ChatBot_Controller {
                 if (!sessao) {
                   sessao = await amalfisCli.ChatbotSessao.create({
                     cliente_id: cliente.retorno.id,
-                    atendente_id: null, // Sessão sem atendente inicial
+                    atendente_id: null,
                     status: true,
                   });
                   console.log("Nova sessão criada");
@@ -119,6 +110,11 @@ class ChatBot_Controller {
                 let proximaPergunta;
 
                 if (ultimaMensagem) {
+                  if (!ultimaMensagem.resposta_id) {
+                    console.error("Última mensagem sem resposta_id.");
+                    continue;
+                  }
+
                   // 4. Busca a próxima resposta com base na última mensagem
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
@@ -134,14 +130,12 @@ class ChatBot_Controller {
                 if (proximaPergunta) {
                   // 5. Envia a próxima mensagem de acordo com o tipo
                   if (proximaPergunta.tipo === "texto") {
-                    // Mensagem de texto simples
                     await chatbot_services.respondeWhatsApp(
                       from,
                       proximaPergunta.mensagem,
                       "text"
                     );
                   } else if (proximaPergunta.tipo === "button") {
-                    // Envia botões interativos
                     const botoes = proximaPergunta.opcoes.map((opcao) => ({
                       type: "reply",
                       reply: {
@@ -163,7 +157,6 @@ class ChatBot_Controller {
                       },
                     });
                   } else if (proximaPergunta.tipo === "list") {
-                    // Envia listas interativas
                     const listaItens = proximaPergunta.opcoes.map((opcao) => ({
                       id: opcao.value,
                       title: opcao.label,

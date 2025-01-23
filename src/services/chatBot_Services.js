@@ -88,12 +88,17 @@ class ChatBot_Services {
 
   // Busca a próxima resposta com base nas respostas possíveis ou padrão
   async buscaProximaResposta(idResposta, respostaUsuario) {
+    if (!idResposta) {
+      console.error("ID da resposta atual é inválido.");
+      return null;
+    }
+
     const resposta = await amalfisCli.ChatbotResposta.findOne({
       where: { id: idResposta },
     });
 
     if (!resposta) {
-      console.log("Resposta atual não encontrada");
+      console.error("Resposta atual não encontrada");
       return null;
     }
 
@@ -110,11 +115,11 @@ class ChatBot_Services {
         console.log("Próxima resposta encontrada");
         return proximaResposta;
       } else {
-        console.log("Próxima resposta não encontrada");
+        console.error("Próxima resposta não encontrada");
         return null;
       }
     } else {
-      console.log("Nenhuma próxima resposta configurada");
+      console.error("Nenhuma próxima resposta configurada");
       return null;
     }
   }
