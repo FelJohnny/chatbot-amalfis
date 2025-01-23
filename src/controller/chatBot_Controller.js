@@ -135,7 +135,7 @@ class ChatBot_Controller {
                   if (proximaPergunta) {
                     const mensagemFormatada = proximaPergunta.mensagem.replace(
                       /\n/g,
-                      "\n"
+                      "\\n"
                     );
                     console.log(mensagemFormatada);
 
