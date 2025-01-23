@@ -140,6 +140,11 @@ class ChatBot_Controller {
                     );
 
                     // Registra a mensagem enviada
+                    console.log(Sequelize.UUIDV4());
+                    console.log(cliente.id);
+                    console.log(sessao.id);
+                    console.log(proximaPergunta.mensagem);
+                    console.log(proximaPergunta.id);
                     await amalfisCli.ChatbotMensagem.create({
                       id: Sequelize.UUIDV4(), // Garante que o ID é gerado corretamente
                       cliente_id: cliente.id,
