@@ -1,5 +1,6 @@
 const { amalfisCli, Sequelize } = require("../models");
 const ChatBot_Services = require("../services/chatBot_Services");
+const { v4: uuidv4 } = require("uuid");
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "SEU_ACCESS_TOKEN_AQUI";
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "SEU_VERIFY_TOKEN_AQUI";
@@ -140,13 +141,13 @@ class ChatBot_Controller {
                     );
 
                     // Registra a mensagem enviada
-                    console.log(Sequelize.UUIDV4());
+                    console.log(uuidv4());
                     console.log(cliente.id);
                     console.log(sessao.id);
                     console.log(proximaPergunta.mensagem);
                     console.log(proximaPergunta.id);
                     await amalfisCli.ChatbotMensagem.create({
-                      id: Sequelize.UUIDV4(), // Garante que o ID é gerado corretamente
+                      id: uuidv4(), // Gera um UUID válido usando uuidv4
                       cliente_id: cliente.id,
                       sessao_id: sessao.id,
                       conteudo_message: proximaPergunta.mensagem,
