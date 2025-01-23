@@ -117,6 +117,7 @@ class ChatBot_Controller {
                     where: {
                       cliente_id: cliente.retorno.id,
                       sessao_id: sessao.id,
+                      resposta_id: { [Sequelize.Op.ne]: null }, // Considera apenas mensagens com resposta_id
                     },
                     order: [["createdAt", "DESC"]],
                   }
@@ -125,12 +126,7 @@ class ChatBot_Controller {
                 let proximaPergunta;
 
                 if (ultimaMensagem) {
-                  if (!ultimaMensagem.resposta_id) {
-                    console.error("Última mensagem sem resposta_id.");
-                    continue;
-                  }
-
-                  // 5. Busca a próxima resposta com base na última mensagem
+                  // 5. Busca a próxima resposta com base na última mensagem do chatbot
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
