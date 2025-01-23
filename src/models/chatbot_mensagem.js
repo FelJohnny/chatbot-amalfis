@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Relacionamento com Respostas do Chatbot (para rastrear qual pergunta gerou esta mensagem)
-      // ChatbotMensagem.belongsTo(models.ChatbotResposta, {
-      //   foreignKey: "resposta_id",
-      //   as: "resposta",
-      // });
+      ChatbotMensagem.belongsTo(models.ChatbotResposta, {
+        foreignKey: "resposta_id",
+        as: "resposta",
+      });
     }
   }
 
@@ -41,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       conteudo_message: {
         type: DataTypes.TEXT, // Permite mensagens longas
         allowNull: false,
+      },
+      resposta_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // Pode ser nulo para mensagens que não estão vinculadas a respostas
       },
     },
     {

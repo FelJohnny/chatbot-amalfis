@@ -10,28 +10,41 @@ module.exports = (sequelize, DataTypes) => {
         as: "respostaPadrao",
       });
 
-      // Relacionamento com Mensagens (para rastrear o histórico)
-      // ChatbotResposta.hasMany(models.ChatbotMensagem, {
-      //   foreignKey: "resposta_id",
-      //   as: "mensagens",
-      // });
+      // Relacionamento com Mensagens (para rastrear histórico de interações)
+      ChatbotResposta.hasMany(models.ChatbotMensagem, {
+        foreignKey: "resposta_id",
+        as: "mensagens",
+      });
     }
   }
 
   ChatbotResposta.init(
     {
-      mensagem: DataTypes.TEXT,
+      mensagem: {
+        type: DataTypes.TEXT,
+        allowNull: false, // Mensagem da resposta
+      },
       status: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: true, // Ativa por padrão
       },
-      respostas_possiveis: DataTypes.JSONB, // Mapeia opções de resposta para IDs de perguntas
-      resposta_padrao: DataTypes.INTEGER, // ID da resposta padrão se nenhuma opção corresponder
+      respostas_possiveis: {
+        type: DataTypes.JSONB, // Mapeia variações de respostas para IDs de perguntas
+        allowNull: true,
+      },
+      resposta_padrao: {
+        type: DataTypes.INTEGER, // ID da resposta padrão (fallback)
+        allowNull: true,
+      },
       tipo: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING, // Tipo de interação (texto, botão, lista, etc.)
+        allowNull: false,
         defaultValue: "texto",
       },
-      opcoes: DataTypes.JSONB, // Configuração de botões (se aplicável)
+      opcoes: {
+        type: DataTypes.JSONB, // Configuração de botões ou listas (se aplicável)
+        allowNull: true,
+      },
     },
     {
       sequelize,

@@ -162,16 +162,17 @@ class ChatBot_Services {
     conteudoMessage,
     atendenteId = null
   ) {
-    if (!respostaId) {
-      console.error("resposta_id está ausente ao registrar mensagem.");
-      throw new Error("resposta_id é obrigatório para registrar a mensagem.");
+    if (!sessaoId || !clienteId || !conteudoMessage) {
+      throw new Error(
+        "Sessão, cliente e conteúdo da mensagem são obrigatórios."
+      );
     }
 
     try {
       const mensagem = await amalfisCli.ChatbotMensagem.create({
         sessao_id: sessaoId,
         cliente_id: clienteId,
-        resposta_id: respostaId,
+        resposta_id: respostaId || null, // Permite que resposta_id seja nulo
         conteudo_message: conteudoMessage,
         atendente_id: atendenteId,
       });

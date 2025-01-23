@@ -43,6 +43,16 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      resposta_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true, // Pode ser nulo se for uma mensagem inicial sem vínculo
+        references: {
+          model: "chatbot_respostas",
+          key: "id",
+        },
+        onDelete: "SET NULL", // Caso a resposta seja excluída
+        onUpdate: "CASCADE",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
