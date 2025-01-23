@@ -169,34 +169,95 @@ class ChatBot_Controller {
                     });
                   } else if (proximaPergunta.tipo === "list") {
                     const listaItens = proximaPergunta.opcoes.map((opcao) => ({
-                      id: opcao.value,
-                      title: opcao.label,
+                      id: opcao.value, // Identificador único
+                      title: opcao.label, // Título da linha
+                      description: opcao.description || "", // Descrição adicional (opcional)
                     }));
 
-                    await chatbot_services.respondeWhatsApp(from, {
+                    const listaMensagem = {
                       type: "interactive",
                       interactive: {
                         type: "list",
                         header: {
                           type: "text",
-                          text: proximaPergunta.mensagem,
+                          text: proximaPergunta.mensagem, // Cabeçalho da lista
                         },
                         body: {
-                          text: "Selecione uma das opções abaixo:",
+                          text: "Selecione uma das opções abaixo:", // Corpo da lista
                         },
                         footer: {
-                          text: "Escolha com sabedoria!",
+                          text: "Escolha com sabedoria!", // Rodapé da lista
                         },
                         action: {
+                          button: "Ver opções", // Texto do botão para abrir a lista
                           sections: [
                             {
-                              title: "Opções",
-                              rows: listaItens,
+                              title: "Opções disponíveis", // Título da seção
+                              rows: listaItens, // Linhas da lista
                             },
                           ],
                         },
                       },
-                    });
+                    };
+
+                    try {
+                      await chatbot_services.respondeWhatsApp(
+                        from,
+                        listaMensagem,
+                        "interactive"
+                      );
+                    } catch (error) {
+                      console.error(
+                        "Erro ao enviar mensagem de lista:",
+                        error.message
+                      );
+                    }
+                  }
+                  if (proximaPergunta.tipo === "list") {
+                    const listaItens = proximaPergunta.opcoes.map((opcao) => ({
+                      id: opcao.value, // Identificador único
+                      title: opcao.label, // Título da linha
+                      description: opcao.description || "", // Descrição adicional (opcional)
+                    }));
+
+                    const listaMensagem = {
+                      type: "interactive",
+                      interactive: {
+                        type: "list",
+                        header: {
+                          type: "text",
+                          text: proximaPergunta.mensagem, // Cabeçalho da lista
+                        },
+                        body: {
+                          text: "Selecione uma das opções abaixo:", // Corpo da lista
+                        },
+                        footer: {
+                          text: "Escolha com sabedoria!", // Rodapé da lista
+                        },
+                        action: {
+                          button: "Ver opções", // Texto do botão para abrir a lista
+                          sections: [
+                            {
+                              title: "Opções disponíveis", // Título da seção
+                              rows: listaItens, // Linhas da lista
+                            },
+                          ],
+                        },
+                      },
+                    };
+
+                    try {
+                      await chatbot_services.respondeWhatsApp(
+                        from,
+                        listaMensagem,
+                        "interactive"
+                      );
+                    } catch (error) {
+                      console.error(
+                        "Erro ao enviar mensagem de lista:",
+                        error.message
+                      );
+                    }
                   }
 
                   // 7. Registra a mensagem enviada pelo chatbot
