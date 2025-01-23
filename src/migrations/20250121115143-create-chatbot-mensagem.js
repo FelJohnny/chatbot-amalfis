@@ -11,7 +11,7 @@ module.exports = {
       },
       atendente_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "chatbot_atendentes",
           key: "id",
