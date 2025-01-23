@@ -79,7 +79,6 @@ class ChatBot_Controller {
                     status: true,
                     retorno: await chatbot_services.criaCliente(from),
                   };
-                  console.log("Novo cliente criado");
                 }
 
                 // 2. Busca ou cria a sessão
@@ -96,7 +95,23 @@ class ChatBot_Controller {
                   console.log("Nova sessão criada");
                 }
 
-                // 3. Recupera a última mensagem
+                // 3. Registra a mensagem recebida do cliente
+                try {
+                  await chatbot_services.registraMensagem(
+                    sessao.id,
+                    cliente.retorno.id,
+                    null, // Resposta_id é nulo porque é uma mensagem do cliente
+                    messageBody
+                  );
+                  console.log("Mensagem do cliente registrada com sucesso");
+                } catch (error) {
+                  console.error(
+                    "Erro ao registrar mensagem do cliente:",
+                    error.message
+                  );
+                }
+
+                // 4. Recupera a última mensagem enviada pelo chatbot
                 const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne(
                   {
                     where: {
@@ -115,7 +130,7 @@ class ChatBot_Controller {
                     continue;
                   }
 
-                  // 4. Busca a próxima resposta com base na última mensagem
+                  // 5. Busca a próxima resposta com base na última mensagem
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
@@ -128,7 +143,7 @@ class ChatBot_Controller {
                 }
 
                 if (proximaPergunta) {
-                  // 5. Envia a próxima mensagem de acordo com o tipo
+                  // 6. Envia a próxima mensagem de acordo com o tipo
                   if (proximaPergunta.tipo === "texto") {
                     await chatbot_services.respondeWhatsApp(
                       from,
@@ -188,7 +203,7 @@ class ChatBot_Controller {
                     });
                   }
 
-                  // 6. Registra a mensagem enviada
+                  // 7. Registra a mensagem enviada pelo chatbot
                   try {
                     await chatbot_services.registraMensagem(
                       sessao.id,
@@ -196,9 +211,10 @@ class ChatBot_Controller {
                       proximaPergunta.id,
                       proximaPergunta.mensagem
                     );
+                    console.log("Mensagem do chatbot registrada com sucesso");
                   } catch (error) {
                     console.error(
-                      `Erro ao registrar mensagem com resposta_id ${proximaPergunta.id}: ${error.message}`
+                      `Erro ao registrar mensagem do chatbot com resposta_id ${proximaPergunta.id}: ${error.message}`
                     );
                   }
                 } else {
