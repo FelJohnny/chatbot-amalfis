@@ -137,6 +137,8 @@ class ChatBot_Controller {
                       /\n/g,
                       "\n"
                     );
+                    console.log(mensagemFormatada);
+
                     // Envia a próxima pergunta
                     await chatbot_services.respondeWhatsApp(
                       from,
