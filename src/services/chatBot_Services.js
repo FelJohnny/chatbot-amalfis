@@ -199,14 +199,12 @@ class ChatBot_Services {
   async respondeWhatsApp(to, message, type) {
     // Verifica se é texto ou mensagem interativa
     const msg =
-      typeof message === "string"
-        ? message.replace(/\\n/g, "\n")
-        : message?.text?.body || null; // Certifica-se de que a mensagem não é nula
+      typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
 
-    if (!msg) {
-      console.error("A mensagem não pode ser vazia.");
-      throw new Error("A mensagem enviada ao WhatsApp está vazia ou inválida.");
-    }
+    // if (!msg) {
+    //   console.error("A mensagem não pode ser vazia.");
+    //   throw new Error("A mensagem enviada ao WhatsApp está vazia ou inválida.");
+    // }
 
     try {
       const data = {
