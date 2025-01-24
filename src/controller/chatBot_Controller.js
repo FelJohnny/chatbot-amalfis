@@ -103,6 +103,7 @@ class ChatBot_Controller {
                     cliente.retorno.id,
                     sessao.id
                   );
+                console.log(ultimaMensagem);
 
                 // 6. Determina a próxima pergunta
                 let proximaPergunta;

@@ -293,5 +293,3 @@ class ChatBot_Services {
 }
 
 module.exports = ChatBot_Services;
-
-module.exports = ChatBot_Services;
