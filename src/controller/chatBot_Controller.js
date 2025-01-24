@@ -108,7 +108,7 @@ class ChatBot_Controller {
                 let proximaPergunta;
                 if (ultimaMensagem) {
                   console.log("ULTIMA MENSAGEM");
-                  console.log(ultimaMensagem);
+                  console.log(ultimaMensagem.dataValues);
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
