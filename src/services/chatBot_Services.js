@@ -143,6 +143,20 @@ class ChatBot_Services {
     return ultimaMensagem;
   }
 
+  // Recupera última mensagem do cliente
+
+  async buscaUltimaMensagemCliente(clienteId, sessaoId) {
+    const mensagemCli = await amalfisCli.ChatbotMensagem.findOne({
+      where: {
+        cliente_id: clienteId,
+        sessao_id: sessaoId,
+        resposta_id: { [Op.eq]: null },
+      },
+      order: [["createdAt", "DESC"]],
+    });
+    return mensagemCli;
+  }
+
   // Busca resposta por ID
   async buscaRespostaCliente(idResposta) {
     const resposta = await amalfisCli.ChatbotResposta.findOne({
@@ -198,10 +212,6 @@ class ChatBot_Services {
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
     // Verifica se é texto ou mensagem interativa
-    console.log(message);
-    console.log(message);
-    console.log(message);
-
     const msg =
       typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
 

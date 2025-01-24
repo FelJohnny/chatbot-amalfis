@@ -107,8 +107,16 @@ class ChatBot_Controller {
                 // 6. Determina a próxima pergunta
                 let proximaPergunta;
                 if (ultimaMensagem) {
-                  console.log("ULTIMA MENSAGEM");
-                  console.log(ultimaMensagem.dataValues);
+                  if (ultimaMensagem.dataValues.resposta_id === 1) {
+                    console.log("ARMAZENANDO NOME DO USUARIO NO BANCO");
+                    const ultimaMensagemCli =
+                      await chatbot_services.buscaUltimaMensagemCliente(
+                        cliente.retorno.id,
+                        sessao.id
+                      );
+                    console.log(ultimaMensagem);
+                    console.log(ultimaMensagem.conteudo_message);
+                  }
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
