@@ -64,8 +64,6 @@ class ChatBot_Controller {
 
               for (const message of messages) {
                 const from = message.from || "número não identificado";
-
-                // Extrai o corpo da mensagem
                 const messageBody = await chatbot_services.getMessageBody(
                   message
                 );
@@ -78,7 +76,19 @@ class ChatBot_Controller {
                   cliente.retorno.id
                 );
 
-                // 3. Registra a mensagem recebida do cliente
+                // 3. Verifica se a mensagem do cliente já foi processada para evitar duplicação
+                const mensagemExistente =
+                  await chatbot_services.mensagemJaProcessada(
+                    sessao.id,
+                    cliente.retorno.id,
+                    messageBody
+                  );
+                if (mensagemExistente) {
+                  console.log("Mensagem já processada, ignorando...");
+                  continue;
+                }
+
+                // 4. Registra a mensagem recebida do cliente
                 await chatbot_services.registraMensagem(
                   sessao.id,
                   cliente.retorno.id,
@@ -87,14 +97,14 @@ class ChatBot_Controller {
                 );
                 console.log("Mensagem do cliente registrada com sucesso");
 
-                // 4. Recupera a última mensagem enviada pelo chatbot
+                // 5. Recupera a última mensagem enviada pelo chatbot
                 const ultimaMensagem =
                   await chatbot_services.recuperaUltimaMensagemChatbot(
                     cliente.retorno.id,
                     sessao.id
                   );
 
-                // 5. Determina a próxima pergunta
+                // 6. Determina a próxima pergunta
                 let proximaPergunta;
                 if (ultimaMensagem) {
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
@@ -105,11 +115,11 @@ class ChatBot_Controller {
                   // Primeira interação
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
-                  );
+                  ); // ID inicial
                 }
 
                 if (proximaPergunta) {
-                  // 6. Envia a próxima mensagem ao cliente
+                  // 7. Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
                       proximaPergunta.tipo,
@@ -123,7 +133,7 @@ class ChatBot_Controller {
                     proximaPergunta.tipo === "texto" ? "text" : "interactive"
                   );
 
-                  // 7. Registra a mensagem enviada pelo chatbot
+                  // 8. Registra a mensagem enviada pelo chatbot
                   await chatbot_services.registraMensagem(
                     sessao.id,
                     cliente.retorno.id,
