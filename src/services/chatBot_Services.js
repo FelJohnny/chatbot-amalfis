@@ -108,7 +108,7 @@ class ChatBot_Services {
       const mensagem = await amalfisCli.ChatbotMensagem.create({
         sessao_id: sessaoId,
         cliente_id: clienteId,
-        resposta_id: respostaId || null, // Permite que resposta_id seja nulo
+        resposta_id: respostaId || null,
         conteudo_message: conteudoMessage,
         atendente_id: atendenteId,
       });
@@ -174,7 +174,6 @@ class ChatBot_Services {
 
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
-    // Verifica se é texto ou mensagem interativa
     const msg =
       typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
 
@@ -246,6 +245,17 @@ class ChatBot_Services {
     } else {
       throw new Error("Tipo de mensagem não suportado.");
     }
+  }
+
+  // Extrai corpo da mensagem (getMessageBody)
+  async getMessageBody(message) {
+    return (
+      message.text?.body?.toLowerCase().trim() ||
+      message.button?.text?.toLowerCase().trim() ||
+      message.interactive?.button_reply?.id ||
+      message.interactive?.list_reply?.id ||
+      ""
+    );
   }
 }
 
