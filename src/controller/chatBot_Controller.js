@@ -114,8 +114,8 @@ class ChatBot_Controller {
                         cliente.retorno.id,
                         sessao.id
                       );
-                    console.log(ultimaMensagem);
-                    console.log(ultimaMensagem.conteudo_message);
+                    console.log(ultimaMensagemCli);
+                    console.log(ultimaMensagemCli.conteudo_message);
                   }
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
