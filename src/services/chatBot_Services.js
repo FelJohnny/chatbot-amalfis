@@ -201,7 +201,7 @@ class ChatBot_Services {
     const msg =
       typeof message === "string"
         ? message.replace(/\\n/g, "\n")
-        : message.text?.body || ""; // Corrige caso "text['body']" não seja string
+        : message?.text?.body || null; // Certifica-se de que a mensagem não é nula
 
     if (!msg) {
       console.error("A mensagem não pode ser vazia.");
@@ -289,5 +289,7 @@ class ChatBot_Services {
     );
   }
 }
+
+module.exports = ChatBot_Services;
 
 module.exports = ChatBot_Services;
