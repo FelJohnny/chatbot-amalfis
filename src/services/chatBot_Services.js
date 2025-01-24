@@ -210,15 +210,10 @@ class ChatBot_Services {
   }
 
   // Envia mensagem via WhatsApp
-  async respondeWhatsApp(to, message, type) {
+  async respondeWhatsApp(to, message, type, sessaoId) {
     // Verifica se é texto ou mensagem interativa
     const msg =
       typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
-
-    // if (!msg) {
-    //   console.error("A mensagem não pode ser vazia.");
-    //   throw new Error("A mensagem enviada ao WhatsApp está vazia ou inválida.");
-    // }
 
     try {
       const data = {
