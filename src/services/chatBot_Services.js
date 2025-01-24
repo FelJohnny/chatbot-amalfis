@@ -44,6 +44,19 @@ class ChatBot_Services {
     });
   }
 
+  // Busca ou cria cliente
+  async buscaOuCriaCliente(numContato) {
+    let cliente = await this.buscaClientePorNumeroContato(numContato);
+    if (!cliente.status) {
+      cliente = {
+        status: true,
+        retorno: await this.criaCliente(numContato),
+      };
+      console.log("Novo cliente criado");
+    }
+    return cliente;
+  }
+
   // Busca cliente por número de contato
   async buscaClientePorNumeroContato(numContato) {
     const cliente = await amalfisCli.ChatbotCliente.findOne({
@@ -68,7 +81,6 @@ class ChatBot_Services {
       qtde_colaborador: null,
       local_emp: null,
     });
-    console.log("Novo cliente criado");
     return cliente;
   }
 
@@ -84,7 +96,6 @@ class ChatBot_Services {
         atendente_id: null,
         status: true,
       });
-      console.log("Nova sessão criada");
     }
 
     return sessao;
@@ -98,26 +109,28 @@ class ChatBot_Services {
     conteudoMessage,
     atendenteId = null
   ) {
-    if (!sessaoId || !clienteId || !conteudoMessage) {
-      throw new Error(
-        "Sessão, cliente e conteúdo da mensagem são obrigatórios."
-      );
-    }
+    const mensagem = await amalfisCli.ChatbotMensagem.create({
+      sessao_id: sessaoId,
+      cliente_id: clienteId,
+      resposta_id: respostaId || null,
+      conteudo_message: conteudoMessage,
+      atendente_id: atendenteId,
+    });
+    return mensagem;
+  }
 
-    try {
-      const mensagem = await amalfisCli.ChatbotMensagem.create({
-        sessao_id: sessaoId,
+  // Recupera última mensagem do chatbot
+  async recuperaUltimaMensagemChatbot(clienteId, sessaoId) {
+    const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne({
+      where: {
         cliente_id: clienteId,
-        resposta_id: respostaId || null,
-        conteudo_message: conteudoMessage,
-        atendente_id: atendenteId,
-      });
-      console.log("Mensagem registrada com sucesso");
-      return mensagem;
-    } catch (error) {
-      console.error("Erro ao registrar mensagem:", error.message);
-      throw error;
-    }
+        sessao_id: sessaoId,
+        resposta_id: { [amalfisCli.Sequelize.Op.ne]: null },
+      },
+      order: [["createdAt", "DESC"]],
+    });
+
+    return ultimaMensagem;
   }
 
   // Busca resposta por ID
@@ -125,88 +138,41 @@ class ChatBot_Services {
     const resposta = await amalfisCli.ChatbotResposta.findOne({
       where: { id: idResposta },
     });
-    if (!resposta) {
-      console.log("Resposta não encontrada");
-      return null;
-    } else {
-      console.log("Resposta encontrada");
-      return resposta;
-    }
+    return resposta;
   }
 
   // Busca a próxima resposta com base nas respostas possíveis ou padrão
   async buscaProximaResposta(idResposta, respostaUsuario) {
-    if (!idResposta) {
-      console.error("ID da resposta atual é inválido.");
-      return null;
-    }
-
-    const resposta = await amalfisCli.ChatbotResposta.findOne({
-      where: { id: idResposta },
-    });
-
-    if (!resposta) {
-      console.error("Resposta atual não encontrada");
-      return null;
-    }
+    const resposta = await this.buscaRespostaCliente(idResposta);
 
     const respostasPossiveis = resposta.respostas_possiveis || {};
     const proximaRespostaId =
       respostasPossiveis[respostaUsuario] || resposta.resposta_padrao;
 
     if (proximaRespostaId) {
-      const proximaResposta = await amalfisCli.ChatbotResposta.findOne({
-        where: { id: proximaRespostaId },
-      });
-
-      if (proximaResposta) {
-        console.log("Próxima resposta encontrada");
-        return proximaResposta;
-      } else {
-        console.error("Próxima resposta não encontrada");
-        return null;
-      }
-    } else {
-      console.error("Nenhuma próxima resposta configurada");
-      return null;
+      return await this.buscaRespostaCliente(proximaRespostaId);
     }
+    return null;
   }
 
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type) {
-    const msg =
-      typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
+    const data = {
+      messaging_product: "whatsapp",
+      to,
+      type,
+      ...(type === "text" ? { text: { body: message } } : { ...message }),
+    };
 
-    try {
-      const data = {
-        messaging_product: "whatsapp",
-        to,
-        type: type,
-        ...(type === "text" ? { text: { body: msg } } : { ...msg }),
-      };
+    const headers = {
+      Authorization: `Bearer ${ACCESS_TOKEN}`,
+      "Content-Type": "application/json",
+    };
 
-      const headers = {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
-      };
-
-      const response = await this.sendHttpsRequest(
-        API_URL,
-        "POST",
-        data,
-        headers
-      );
-
-      console.log({
-        message: "Mensagem respondida com sucesso!",
-        data: response,
-      });
-    } catch (error) {
-      console.error("Erro ao enviar mensagem via WhatsApp:", error.message);
-    }
+    await this.sendHttpsRequest(API_URL, "POST", data, headers);
   }
 
-  // Processa tipo de mensagem (texto, botão, lista)
+  // Processa mensagem (texto, botão, lista)
   async processaMensagem(tipo, mensagem, opcoes) {
     if (tipo === "texto") {
       return { text: { body: mensagem } };
@@ -242,9 +208,8 @@ class ChatBot_Services {
           },
         },
       };
-    } else {
-      throw new Error("Tipo de mensagem não suportado.");
     }
+    throw new Error("Tipo de mensagem não suportado.");
   }
 
   // Extrai corpo da mensagem (getMessageBody)
