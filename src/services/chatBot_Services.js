@@ -135,7 +135,7 @@ class ChatBot_Services {
       where: {
         cliente_id: clienteId,
         sessao_id: sessaoId,
-        resposta_id: { [amalfisCli.Sequelize.Op.ne]: null },
+        resposta_id: { [Op.ne]: null },
       },
       order: [["createdAt", "DESC"]],
     });
