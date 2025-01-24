@@ -242,7 +242,7 @@ class ChatBot_Services {
   // Processa tipo de mensagem (texto, botão, lista)
   async processaMensagem(tipo, mensagem, opcoes) {
     if (tipo === "texto") {
-      return { text: { body: mensagem } };
+      return { text: { body: mensagem.text.body } };
     } else if (tipo === "button") {
       const botoes = opcoes.map((opcao) => ({
         type: "reply",
