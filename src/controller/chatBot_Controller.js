@@ -64,69 +64,39 @@ class ChatBot_Controller {
 
               for (const message of messages) {
                 const from = message.from || "número não identificado";
-                const messageBody =
-                  message.text?.body?.toLowerCase().trim() || // Texto simples
-                  message.button?.text?.toLowerCase().trim() || // Botões interativos
-                  message.interactive?.button_reply?.id || // Botão com ID
-                  message.interactive?.list_reply?.id || // Lista com ID
-                  "";
 
-                // 1. Busca ou cria o cliente
-                let cliente =
-                  await chatbot_services.buscaClientePorNumeroContato(from);
-                if (!cliente.status) {
-                  cliente = {
-                    status: true,
-                    retorno: await chatbot_services.criaCliente(from),
-                  };
-                }
-
-                // 2. Busca ou cria a sessão
-                let sessao = await amalfisCli.ChatbotSessao.findOne({
-                  where: { cliente_id: cliente.retorno.id, status: true },
-                });
-
-                if (!sessao) {
-                  sessao = await amalfisCli.ChatbotSessao.create({
-                    cliente_id: cliente.retorno.id,
-                    atendente_id: null,
-                    status: true,
-                  });
-                  console.log("Nova sessão criada");
-                }
-
-                // 3. Registra a mensagem recebida do cliente
-                try {
-                  await chatbot_services.registraMensagem(
-                    sessao.id,
-                    cliente.retorno.id,
-                    null, // Resposta_id é nulo porque é uma mensagem do cliente
-                    messageBody
-                  );
-                  console.log("Mensagem do cliente registrada com sucesso");
-                } catch (error) {
-                  console.error(
-                    "Erro ao registrar mensagem do cliente:",
-                    error.message
-                  );
-                }
-
-                // 4. Recupera a última mensagem enviada pelo chatbot
-                const ultimaMensagem = await amalfisCli.ChatbotMensagem.findOne(
-                  {
-                    where: {
-                      cliente_id: cliente.retorno.id,
-                      sessao_id: sessao.id,
-                      resposta_id: { [Sequelize.Op.ne]: null }, // Considera apenas mensagens com resposta_id
-                    },
-                    order: [["createdAt", "DESC"]],
-                  }
+                // Extrai o corpo da mensagem
+                const messageBody = await chatbot_services.getMessageBody(
+                  message
                 );
 
-                let proximaPergunta;
+                // 1. Busca ou cria o cliente
+                const cliente = await chatbot_services.buscaOuCriaCliente(from);
 
+                // 2. Busca ou cria a sessão
+                const sessao = await chatbot_services.buscaOuCriaSessao(
+                  cliente.retorno.id
+                );
+
+                // 3. Registra a mensagem recebida do cliente
+                await chatbot_services.registraMensagem(
+                  sessao.id,
+                  cliente.retorno.id,
+                  null, // resposta_id é nulo porque é mensagem do cliente
+                  messageBody
+                );
+                console.log("Mensagem do cliente registrada com sucesso");
+
+                // 4. Recupera a última mensagem enviada pelo chatbot
+                const ultimaMensagem =
+                  await chatbot_services.recuperaUltimaMensagemChatbot(
+                    cliente.retorno.id,
+                    sessao.id
+                  );
+
+                // 5. Determina a próxima pergunta
+                let proximaPergunta;
                 if (ultimaMensagem) {
-                  // 5. Busca a próxima resposta com base na última mensagem do chatbot
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
@@ -135,145 +105,32 @@ class ChatBot_Controller {
                   // Primeira interação
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
-                  ); // ID inicial
+                  );
                 }
 
                 if (proximaPergunta) {
-                  // 6. Envia a próxima mensagem de acordo com o tipo
-                  if (proximaPergunta.tipo === "texto") {
-                    await chatbot_services.respondeWhatsApp(
-                      from,
+                  // 6. Envia a próxima mensagem ao cliente
+                  const mensagemFormatada =
+                    await chatbot_services.processaMensagem(
+                      proximaPergunta.tipo,
                       proximaPergunta.mensagem,
-                      "text"
+                      proximaPergunta.opcoes || []
                     );
-                  } else if (proximaPergunta.tipo === "button") {
-                    const botoes = proximaPergunta.opcoes.map((opcao) => ({
-                      type: "reply",
-                      reply: {
-                        id: opcao.value,
-                        title: opcao.label,
-                      },
-                    }));
 
-                    await chatbot_services.respondeWhatsApp(from, {
-                      type: "interactive",
-                      interactive: {
-                        type: "button",
-                        body: {
-                          text: proximaPergunta.mensagem,
-                        },
-                        action: {
-                          buttons: botoes,
-                        },
-                      },
-                    });
-                  } else if (proximaPergunta.tipo === "list") {
-                    const listaItens = proximaPergunta.opcoes.map((opcao) => ({
-                      id: opcao.value, // Identificador único
-                      title: opcao.label, // Título da linha
-                      description: opcao.description || "", // Descrição adicional (opcional)
-                    }));
-
-                    const listaMensagem = {
-                      type: "interactive",
-                      interactive: {
-                        type: "list",
-                        header: {
-                          type: "text",
-                          text: proximaPergunta.mensagem, // Cabeçalho da lista
-                        },
-                        body: {
-                          text: "Selecione uma das opções abaixo:", // Corpo da lista
-                        },
-                        footer: {
-                          text: "Escolha com sabedoria!", // Rodapé da lista
-                        },
-                        action: {
-                          button: "Ver opções", // Texto do botão para abrir a lista
-                          sections: [
-                            {
-                              title: "Opções disponíveis", // Título da seção
-                              rows: listaItens, // Linhas da lista
-                            },
-                          ],
-                        },
-                      },
-                    };
-
-                    try {
-                      await chatbot_services.respondeWhatsApp(
-                        from,
-                        listaMensagem,
-                        "interactive"
-                      );
-                    } catch (error) {
-                      console.error(
-                        "Erro ao enviar mensagem de lista:",
-                        error.message
-                      );
-                    }
-                  }
-                  if (proximaPergunta.tipo === "list") {
-                    const listaItens = proximaPergunta.opcoes.map((opcao) => ({
-                      id: opcao.value, // Identificador único
-                      title: opcao.label, // Título da linha
-                      description: opcao.description || "", // Descrição adicional (opcional)
-                    }));
-
-                    const listaMensagem = {
-                      type: "interactive",
-                      interactive: {
-                        type: "list",
-                        header: {
-                          type: "text",
-                          text: proximaPergunta.mensagem, // Cabeçalho da lista
-                        },
-                        body: {
-                          text: "Selecione uma das opções abaixo:", // Corpo da lista
-                        },
-                        footer: {
-                          text: "Escolha com sabedoria!", // Rodapé da lista
-                        },
-                        action: {
-                          button: "Ver opções", // Texto do botão para abrir a lista
-                          sections: [
-                            {
-                              title: "Opções disponíveis", // Título da seção
-                              rows: listaItens, // Linhas da lista
-                            },
-                          ],
-                        },
-                      },
-                    };
-
-                    try {
-                      await chatbot_services.respondeWhatsApp(
-                        from,
-                        listaMensagem,
-                        "interactive"
-                      );
-                    } catch (error) {
-                      console.error(
-                        "Erro ao enviar mensagem de lista:",
-                        error.message
-                      );
-                    }
-                  }
+                  await chatbot_services.respondeWhatsApp(
+                    from,
+                    mensagemFormatada,
+                    proximaPergunta.tipo === "texto" ? "text" : "interactive"
+                  );
 
                   // 7. Registra a mensagem enviada pelo chatbot
-                  try {
-                    await chatbot_services.registraMensagem(
-                      sessao.id,
-                      cliente.retorno.id,
-                      proximaPergunta.id,
-                      proximaPergunta.mensagem
-                    );
-                    console.log("Mensagem do chatbot registrada com sucesso");
-                  } catch (error) {
-                    console.error(
-                      `Erro ao registrar mensagem do chatbot com resposta_id ${proximaPergunta.id}: ${error.message}`
-                    );
-                  }
+                  await chatbot_services.registraMensagem(
+                    sessao.id,
+                    cliente.retorno.id,
+                    proximaPergunta.id,
+                    proximaPergunta.mensagem
+                  );
+                  console.log("Mensagem do chatbot registrada com sucesso");
                 } else {
                   console.log(
                     "Fim do fluxo ou próxima pergunta não encontrada. Encerrando interação."
