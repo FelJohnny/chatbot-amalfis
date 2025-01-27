@@ -106,24 +106,21 @@ class ChatBot_Controller {
 
                 // 6. Determina a próxima pergunta
                 let proximaPergunta;
+                let nomeCli;
                 if (ultimaMensagem) {
                   if (ultimaMensagem.dataValues.resposta_id === 1) {
-                    console.log("ARMAZENANDO NOME DO USUARIO NO BANCO");
+                    //ARMAZENANDO NOME DO USUARIO NO BANCO
                     const { conteudo_message } =
                       await chatbot_services.buscaUltimaMensagemCliente(
                         cliente.retorno.id,
                         sessao.id
                       );
-                    console.log("NOME INFORMADO PELO CLI");
-                    console.log(conteudo_message);
-
-                    const nomeCliente =
-                      await chatbot_services.atulizaRegistroCliente(
-                        conteudo_message,
-                        "nome",
-                        cliente.retorno.id
-                      );
-                    console.log(`nome gravado no banco` + nomeCliente);
+                    nomeCli = conteudo_message;
+                    await chatbot_services.atulizaRegistroCliente(
+                      conteudo_message,
+                      "nome",
+                      cliente.retorno.id
+                    );
                   }
 
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
@@ -138,12 +135,23 @@ class ChatBot_Controller {
                 }
 
                 if (proximaPergunta) {
-                  // 7. Envia a próxima mensagem ao cliente
+                  // Inicializa a variável com a mensagem padrão
+                  let msgVariable = proximaPergunta.mensagem;
+
+                  // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
+                  if (proximaPergunta.id === 2) {
+                    msgVariable = proximaPergunta.mensagem.replace(
+                      "{resposta_anterior}",
+                      nomeCli
+                    );
+                  }
+
+                  // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
                       proximaPergunta.tipo,
-                      proximaPergunta.mensagem,
-                      proximaPergunta.opcoes || []
+                      msgVariable, // Mensagem formatada ou original
+                      proximaPergunta.opcoes || [] // Opções, se houver
                     );
 
                   await chatbot_services.respondeWhatsApp(
