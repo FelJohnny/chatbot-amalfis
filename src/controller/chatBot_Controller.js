@@ -141,7 +141,7 @@ class ChatBot_Controller {
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
                   if (proximaPergunta.id === 2) {
                     msgVariable = proximaPergunta.mensagem.replace(
-                      "{resposta_anterior}",
+                      "{nome_cli}",
                       nomeCli
                     );
                   }
