@@ -99,6 +99,26 @@ class ChatBot_Services {
     return sessao;
   }
 
+  async atulizaRegistroCliente(value, column, clienteId) {
+    const [rowsAtualizada] = await amalfisCli.ChatbotCliente.update(
+      {
+        [column]: value,
+      },
+      {
+        where: {
+          id: clienteId,
+        },
+      }
+    );
+
+    if (rowsAtualizada > 0) {
+      console.log("Registro atualizado com sucesso");
+      return rowsAtualizada;
+    } else {
+      console.log("Nenhum registro foi atualizada");
+    }
+  }
+
   // Registra mensagem no histórico
   async registraMensagem(
     sessaoId,

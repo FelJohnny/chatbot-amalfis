@@ -109,14 +109,21 @@ class ChatBot_Controller {
                 if (ultimaMensagem) {
                   if (ultimaMensagem.dataValues.resposta_id === 1) {
                     console.log("ARMAZENANDO NOME DO USUARIO NO BANCO");
-                    const ultimaMensagemCli =
+                    const { conteudo_message } =
                       await chatbot_services.buscaUltimaMensagemCliente(
                         cliente.retorno.id,
                         sessao.id
                       );
+                    console.log("NOME INFORMADO PELO CLI");
+                    console.log(conteudo_message);
 
-                    console.log(ultimaMensagemCli);
-                    console.log(ultimaMensagemCli.conteudo_message);
+                    const nomeCliente =
+                      await chatbot_services.atulizaRegistroCliente(
+                        conteudo_message,
+                        "nome",
+                        cliente.retorno.id
+                      );
+                    console.log(`nome gravado no banco` + nomeCliente);
                   }
 
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
