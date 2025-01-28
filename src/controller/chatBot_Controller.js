@@ -139,12 +139,11 @@ class ChatBot_Controller {
                   let msgVariable = proximaPergunta.mensagem;
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
-                  if (proximaPergunta.id === 2) {
-                    msgVariable = proximaPergunta.mensagem.replace(
-                      "{nome_cli}",
-                      nomeCli
-                    );
-                  }
+
+                  msgVariable = proximaPergunta.mensagem.replace(
+                    "{nome_cli}",
+                    nomeCli
+                  );
 
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
