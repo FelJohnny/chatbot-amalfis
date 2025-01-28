@@ -282,14 +282,11 @@ class ChatBot_Services {
         },
       };
     } else if (tipo === "list") {
-      const listaItens = opcoes.map((opcao) => {
-        validateOption(opcao); // Valida cada opção
-        return {
-          id: opcao.value,
-          title: opcao.label,
-          description: opcao.description || "",
-        };
-      });
+      const listaItens = opcoes.map((opcao) => ({
+        id: opcao.value,
+        title: opcao.label,
+        description: opcao.description || "",
+      }));
 
       return {
         interactive: {
@@ -316,20 +313,6 @@ class ChatBot_Services {
       message.interactive?.button_reply?.id || // Botão com ID
       message.interactive?.list_reply?.id || // Lista com ID
       ""
-    );
-  }
-}
-
-function validateOption(option) {
-  if (!option.id || !/^[a-zA-Z0-9_-]+$/.test(option.id)) {
-    throw new Error(`ID inválido: ${option.id}`);
-  }
-  if (!option.title || option.title.length > 24) {
-    throw new Error(`Título da opção excede 24 caracteres: ${option.title}`);
-  }
-  if (option.description && option.description.length > 1024) {
-    throw new Error(
-      `Descrição da opção excede 1024 caracteres: ${option.description}`
     );
   }
 }
