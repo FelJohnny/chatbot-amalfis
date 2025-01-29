@@ -263,13 +263,18 @@ class ChatBot_Services {
   }
 
   // Processa tipo de mensagem (texto, botão, lista)
-  async processaMensagem(tipo, mensagem, opcoes,nomeCli) {
+  async processaMensagem(tipo, mensagem, opcoes,idCliente) {
+    
 
+    const cliente = await amalfisCli.ChatbotCliente.findOne({where: {id:idCliente}})
+    console.log(cliente);
+    
+    console.log(cliente.id);
     
 
     const msg = mensagem.replace(/\\n/g, "\n").replace(
       "{nome_cli}",
-      nomeCli
+      cliente.id
     );
  
     if (tipo === "texto") {
