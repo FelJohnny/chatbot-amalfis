@@ -264,9 +264,8 @@ class ChatBot_Services {
 
   // Processa tipo de mensagem (texto, botão, lista)
   async processaMensagem(tipo, mensagem, opcoes) {
+    const msg = mensagem.replace(/\\n/g, "\n");
     if (tipo === "texto") {
-      const msg = mensagem.replace(/\\n/g, "\n");
-
       return msg;
     } else if (tipo === "button") {
       const botoes = opcoes.map((opcao) => ({
@@ -277,7 +276,7 @@ class ChatBot_Services {
       return {
         interactive: {
           type: "button",
-          body: { text: mensagem },
+          body: { text: msg },
           action: { buttons: botoes },
         },
       };
@@ -292,7 +291,7 @@ class ChatBot_Services {
         interactive: {
           type: "list",
           //header: { type: "text", text: "" },
-          body: { text: mensagem },
+          body: { text: msg },
           footer: { text: "Escolha uma opção abaixo" },
           action: {
             button: "Ver opções",
