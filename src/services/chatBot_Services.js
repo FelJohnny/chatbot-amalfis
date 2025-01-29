@@ -263,8 +263,13 @@ class ChatBot_Services {
   }
 
   // Processa tipo de mensagem (texto, botão, lista)
-  async processaMensagem(tipo, mensagem, opcoes) {
-    const msg = mensagem.replace(/\\n/g, "\n");
+  async processaMensagem(tipo, mensagem, opcoes,nomeCli) {
+
+    const msg = mensagem.replace(/\\n/g, "\n").replace(
+      "{nome_cli}",
+      nomeCli
+    );
+ 
     if (tipo === "texto") {
       return msg;
     } else if (tipo === "button") {
