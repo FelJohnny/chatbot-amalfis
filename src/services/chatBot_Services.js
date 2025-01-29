@@ -295,7 +295,7 @@ class ChatBot_Services {
           type: "list",
           //header: { type: "text", text: "" },
           body: { text: mensagem },
-          footer: { text: "Escolha com sabedoria!" },
+          footer: { text: "Escolha uma opção abaixo" },
           action: {
             button: "Ver opções",
             sections: [{ title: "Opções disponíveis", rows: listaItens }],
