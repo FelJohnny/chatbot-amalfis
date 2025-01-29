@@ -234,9 +234,6 @@ class ChatBot_Services {
     // Verifica se é texto ou mensagem interativa
     console.log(message);
 
-    const msg =
-      typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
-
     try {
       const data = {
         messaging_product: "whatsapp",
@@ -269,6 +266,7 @@ class ChatBot_Services {
   // Processa tipo de mensagem (texto, botão, lista)
   async processaMensagem(tipo, mensagem, opcoes) {
     if (tipo === "texto") {
+      message.replace(/\\n/g, "\n");
       return mensagem;
     } else if (tipo === "button") {
       const botoes = opcoes.map((opcao) => ({
