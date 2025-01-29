@@ -147,7 +147,7 @@ class ChatBot_Controller {
                       proximaPergunta.tipo,
                       msgVariable, // Mensagem formatada ou original
                       proximaPergunta.opcoes || [], // Opções, se houver
-                      nomeCli
+                      cliente.nome
                     );
 
                   await chatbot_services.respondeWhatsApp(
