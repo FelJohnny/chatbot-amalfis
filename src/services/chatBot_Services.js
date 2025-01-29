@@ -293,7 +293,7 @@ class ChatBot_Services {
       return {
         interactive: {
           type: "list",
-          header: { type: "text", text: "" },
+          //header: { type: "text", text: "" },
           body: { text: mensagem },
           footer: { text: "Escolha com sabedoria!" },
           action: {
