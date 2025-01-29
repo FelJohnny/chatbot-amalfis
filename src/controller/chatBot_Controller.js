@@ -140,17 +140,14 @@ class ChatBot_Controller {
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
 
-                  msgVariable = proximaPergunta.mensagem.replace(
-                    "{nome_cli}",
-                    nomeCli
-                  );
-
+              
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
                       proximaPergunta.tipo,
                       msgVariable, // Mensagem formatada ou original
-                      proximaPergunta.opcoes || [] // Opções, se houver
+                      proximaPergunta.opcoes || [], // Opções, se houver
+                      nomeCli
                     );
 
                   await chatbot_services.respondeWhatsApp(
