@@ -232,14 +232,13 @@ class ChatBot_Services {
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type, sessaoId) {
     // Verifica se é texto ou mensagem interativa
-    console.log(message);
 
     try {
       const data = {
         messaging_product: "whatsapp",
         to,
         type: type,
-        ...(type === "text" ? { text: { body: msg } } : { ...message }),
+        ...(type === "text" ? { text: { body: message } } : { ...message }),
       };
 
       const headers = {
