@@ -232,6 +232,8 @@ class ChatBot_Services {
   // Envia mensagem via WhatsApp
   async respondeWhatsApp(to, message, type, sessaoId) {
     // Verifica se é texto ou mensagem interativa
+    console.log(message);
+
     const msg =
       typeof message === "string" ? message.replace(/\\n/g, "\n") : message;
 
