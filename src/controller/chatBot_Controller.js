@@ -144,6 +144,7 @@ class ChatBot_Controller {
                     "{nome_cli}",
                     nomeCli
                   );
+                  console.log(msgVariable);
 
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
