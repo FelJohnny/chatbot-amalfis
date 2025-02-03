@@ -17,7 +17,15 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      tipo_entidade: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       cnpj: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      cpf: {
         type: Sequelize.STRING,
         allowNull: true,
       },

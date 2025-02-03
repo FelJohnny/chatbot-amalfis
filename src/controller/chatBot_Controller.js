@@ -108,7 +108,10 @@ class ChatBot_Controller {
                 let proximaPergunta;
                 let nomeCli;
                 if (ultimaMensagem) {
-                  if (ultimaMensagem.dataValues.resposta_id === 1) {
+                  if (
+                    ultimaMensagem.dataValues.resposta_id === 1 ||
+                    ultimaMensagem.dataValues.resposta_id === 4
+                  ) {
                     //ARMAZENANDO NOME DO USUARIO NO BANCO
                     const { conteudo_message } =
                       await chatbot_services.buscaUltimaMensagemCliente(
@@ -140,7 +143,6 @@ class ChatBot_Controller {
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
 
-              
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(

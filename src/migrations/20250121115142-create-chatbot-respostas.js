@@ -18,6 +18,10 @@ module.exports = {
         allowNull: false,
         defaultValue: true, // Ativa por padrão
       },
+      msg_footer: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       respostas_possiveis: {
         type: Sequelize.JSONB, // Respostas possíveis mapeadas para IDs
         allowNull: true,
@@ -39,6 +43,14 @@ module.exports = {
       },
       opcoes: {
         type: Sequelize.JSONB, // Configuração de botões ou listas
+        allowNull: true,
+      },
+      save_db: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      save_where: {
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       createdAt: {
