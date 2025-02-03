@@ -45,6 +45,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSONB, // Configuração de botões ou listas (se aplicável)
         allowNull: true,
       },
+      msg_footer: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      save_db: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      save_where: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
     },
     {
       sequelize,
