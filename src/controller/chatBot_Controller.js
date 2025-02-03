@@ -77,25 +77,25 @@ class ChatBot_Controller {
                 );
 
                 // 3. Verifica se a mensagem do cliente já foi processada para evitar duplicação
-                const mensagemExistente =
-                  await chatbot_services.mensagemJaProcessada(
-                    sessao.id,
-                    cliente.retorno.id,
-                    messageBody
-                  );
-                if (mensagemExistente) {
-                  console.log("Mensagem já processada, ignorando...");
-                  continue;
-                }
+                // const mensagemExistente =
+                //   await chatbot_services.mensagemJaProcessada(
+                //     sessao.id,
+                //     cliente.retorno.id,
+                //     messageBody
+                //   );
+                // if (mensagemExistente) {
+                //   console.log("Mensagem já processada, ignorando...");
+                //   continue;
+                // }
 
                 // 4. Registra a mensagem recebida do cliente
-                // await chatbot_services.registraMensagem(
-                //   sessao.id,
-                //   cliente.retorno.id,
-                //   null, // resposta_id é nulo porque é mensagem do cliente
-                //   messageBody
-                // );
-                // console.log("Mensagem do cliente registrada com sucesso");
+                await chatbot_services.registraMensagem(
+                  sessao.id,
+                  cliente.retorno.id,
+                  null, // resposta_id é nulo porque é mensagem do cliente
+                  messageBody
+                );
+                console.log("Mensagem do cliente registrada com sucesso");
 
                 // 5. Recupera a última mensagem enviada pelo chatbot
                 const ultimaMensagem =
