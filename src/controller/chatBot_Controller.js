@@ -107,10 +107,11 @@ class ChatBot_Controller {
                 // 6. Determina a próxima pergunta
                 let proximaPergunta;
                 let nomeCli;
+                const respostaBot = chatbot_services.buscaRespostaCliente(
+                  ultimaMensagem.resposta_id
+                );
+                console.log(respostaBot);
                 if (ultimaMensagem) {
-                  const respostaBot = chatbot_services.buscaRespostaCliente(
-                    ultimaMensagem.resposta_id
-                  );
                   if (respostaBot.save_db) {
                     console.log("FUNCIONOU");
                     //ARMAZENANDO NOME DO USUARIO NO BANCO
