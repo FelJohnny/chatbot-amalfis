@@ -5,7 +5,7 @@ const ChatBot_Services = require("../../../services/chatBot_Services");
 const chatbot_services = new ChatBot_Services();
 
 // Tempo limite de inatividade (15 minutos)
-const TEMPO_LIMITE_INATIVIDADE = 15 * 60 * 1000;
+const TEMPO_LIMITE_INATIVIDADE = 1 * 60 * 1000;
 
 async function encerrarSessoesInativas() {
   try {
@@ -56,6 +56,6 @@ async function encerrarSessoesInativas() {
 }
 
 // Executar essa função a cada 5 minutos
-setInterval(encerrarSessoesInativas, 5 * 60 * 1000);
+setInterval(encerrarSessoesInativas, 1 * 60 * 1000);
 
 module.exports = encerrarSessoesInativas;
