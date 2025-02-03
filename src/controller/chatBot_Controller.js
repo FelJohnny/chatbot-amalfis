@@ -108,22 +108,6 @@ class ChatBot_Controller {
                 let proximaPergunta;
                 // let nomeCli;
                 if (ultimaMensagem) {
-                  // if (respostaBot.save_db) {
-                  //   console.log("FUNCIONOU");
-                  //   //ARMAZENANDO NOME DO USUARIO NO BANCO
-                  //   const { conteudo_message } =
-                  //     await chatbot_services.buscaUltimaMensagemCliente(
-                  //       cliente.retorno.id,
-                  //       sessao.id
-                  //     );
-                  //   nomeCli = conteudo_message;
-                  //   await chatbot_services.atulizaRegistroCliente(
-                  //     conteudo_message,
-                  //     "nome",
-                  //     cliente.retorno.id
-                  //   );
-                  // }
-
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
@@ -136,8 +120,19 @@ class ChatBot_Controller {
                 }
 
                 if (proximaPergunta) {
-                  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                  console.log(proximaPergunta.save_db);
+                  if (proximaPergunta.save_db) {
+                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    const { conteudo_message } =
+                      await chatbot_services.buscaUltimaMensagemCliente(
+                        cliente.retorno.id,
+                        sessao.id
+                      );
+                    await chatbot_services.atulizaRegistroCliente(
+                      conteudo_message,
+                      proximaPergunta.save_where,
+                      cliente.retorno.id
+                    );
+                  }
 
                   // Inicializa a variável com a mensagem padrão
                   let msgVariable = proximaPergunta.mensagem;
