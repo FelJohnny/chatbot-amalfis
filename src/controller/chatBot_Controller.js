@@ -106,27 +106,23 @@ class ChatBot_Controller {
 
                 // 6. Determina a próxima pergunta
                 let proximaPergunta;
-                let nomeCli;
-                const respostaBot = chatbot_services.buscaRespostaCliente(
-                  ultimaMensagem.resposta_id
-                );
-                console.log(respostaBot);
+                // let nomeCli;
                 if (ultimaMensagem) {
-                  if (respostaBot.save_db) {
-                    console.log("FUNCIONOU");
-                    //ARMAZENANDO NOME DO USUARIO NO BANCO
-                    const { conteudo_message } =
-                      await chatbot_services.buscaUltimaMensagemCliente(
-                        cliente.retorno.id,
-                        sessao.id
-                      );
-                    nomeCli = conteudo_message;
-                    await chatbot_services.atulizaRegistroCliente(
-                      conteudo_message,
-                      "nome",
-                      cliente.retorno.id
-                    );
-                  }
+                  // if (respostaBot.save_db) {
+                  //   console.log("FUNCIONOU");
+                  //   //ARMAZENANDO NOME DO USUARIO NO BANCO
+                  //   const { conteudo_message } =
+                  //     await chatbot_services.buscaUltimaMensagemCliente(
+                  //       cliente.retorno.id,
+                  //       sessao.id
+                  //     );
+                  //   nomeCli = conteudo_message;
+                  //   await chatbot_services.atulizaRegistroCliente(
+                  //     conteudo_message,
+                  //     "nome",
+                  //     cliente.retorno.id
+                  //   );
+                  // }
 
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
@@ -140,6 +136,9 @@ class ChatBot_Controller {
                 }
 
                 if (proximaPergunta) {
+                  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                  console.log(proximaPergunta.save_db);
+
                   // Inicializa a variável com a mensagem padrão
                   let msgVariable = proximaPergunta.mensagem;
 
