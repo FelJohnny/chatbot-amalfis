@@ -109,7 +109,7 @@ class ChatBot_Controller {
                 let nomeCli;
                 if (ultimaMensagem) {
                   const respostaBot = chatbot_services.buscaRespostaCliente(
-                    ultimaMensagem.id
+                    ultimaMensagem.resposta_id
                   );
                   if (respostaBot.save_db) {
                     console.log("FUNCIONOU");
