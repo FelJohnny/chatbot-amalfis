@@ -8,35 +8,6 @@ const API_URL = process.env.API_URL;
 
 const chatbot_services = new ChatBot_Services();
 
-//resposta de mensagens
-const replyMessage = async (to, type, message) => {
-  if (!to || !message || !type) {
-    console.log('Os campos "to", type e "message" são obrigatórios.');
-  } else {
-    try {
-      const data = {
-        messaging_product: "whatsapp",
-        to,
-        type: "text",
-        text: { body: message },
-      };
-
-      const headers = {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
-      };
-
-      const response = await sendHttpsRequest(API_URL, "POST", data, headers);
-      console.log({
-        message: "Mensagem de texto respondida com sucesso!",
-        data: response,
-      });
-    } catch (error) {
-      console.error("Erro ao enviar mensagem de texto:", error.message);
-    }
-  }
-};
-
 class ChatBot_Controller {
   async verifyWebhook(req, res) {
     const mode = req.query["hub.mode"];
@@ -121,7 +92,6 @@ class ChatBot_Controller {
 
                 if (proximaPergunta) {
                   if (proximaPergunta.save_db) {
-                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     const { conteudo_message } =
                       await chatbot_services.buscaUltimaMensagemCliente(
                         cliente.retorno.id,

@@ -230,7 +230,7 @@ class ChatBot_Services {
   }
 
   // Envia mensagem via WhatsApp
-  async respondeWhatsApp(to, message, type, sessaoId) {
+  async respondeWhatsApp(to, message, type) {
     // Verifica se é texto ou mensagem interativa
 
     try {
@@ -263,26 +263,20 @@ class ChatBot_Services {
   }
 
   // Processa tipo de mensagem (texto, botão, lista)
-  async processaMensagem(tipo, mensagem, opcoes,idCliente) {
-    
-    
-    const validaNomeCli = mensagem.includes('{nome_cli}');
+  async processaMensagem(tipo, mensagem, opcoes, idCliente) {
+    const validaNomeCli = mensagem.includes("{nome_cli}");
 
     let nomeCli;
-    if(validaNomeCli){
-      const cliente = await amalfisCli.ChatbotCliente.findOne({where: {id:idCliente}})
+    if (validaNomeCli) {
+      const cliente = await amalfisCli.ChatbotCliente.findOne({
+        where: { id: idCliente },
+      });
       console.log(cliente);
-      nomeCli = cliente.nome
+      nomeCli = cliente.nome;
     }
-    
-    
-    
 
-    const msg = mensagem.replace(/\\n/g, "\n").replace(
-      "{nome_cli}",
-      nomeCli
-    );
- 
+    const msg = mensagem.replace(/\\n/g, "\n").replace("{nome_cli}", nomeCli);
+
     if (tipo === "texto") {
       return msg;
     } else if (tipo === "button") {

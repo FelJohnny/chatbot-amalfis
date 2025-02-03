@@ -1,6 +1,7 @@
 const express = require("express");
 const routes = require("./routes/index.js"); // Importa as rotas
 const { sequelizeSisplan, sequelizeAmalfisCli } = require("./config/config.js");
+const encerrarSessoesInativas = require("./utilities/functions/chatbot/sessionCleanup.js");
 
 const app = express();
 
@@ -25,5 +26,7 @@ sequelizeAmalfisCli
   .catch((err) => {
     console.error("Não foi possível se conectar com o AMALFIS-CHATBOT", err);
   });
+
+encerrarSessoesInativas();
 
 module.exports = app;
