@@ -351,7 +351,10 @@ class ChatBot_Services {
         // ],
       });
      const respostaiA = await chat.sendMessage([{text:message}]) 
-     return respostaiA.text()
+     const retorno = await respostaiA.text()
+     console.log(retorno);
+     
+     return  retorno
     } catch (error) {
       console.error("Erro ao chamar a API do Gemini:", error);
       return "Desculpe, não consegui processar sua solicitação no momento.";
