@@ -82,19 +82,22 @@ class ChatBot_Controller {
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
+
+                    
                   );
                 } else {
                   // Primeira interação
-
-                console.log(proximaPergunta,"~teeeeeeeeeeeeeeeeeeeeeeeesteeeeeeeeeee1~");
+                  
+                  
                   
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
                   ); // ID inicial
                   
                   
-                
+                  
                 }
+                console.log(ultimaMensagem,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
                 if (proximaPergunta) {
                   if (proximaPergunta.save_db) {
