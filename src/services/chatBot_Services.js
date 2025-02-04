@@ -352,7 +352,7 @@ class ChatBot_Services {
       const data = await response.json();
   
       if (data && data.candidates && data.candidates.length > 0) {
-        return data.candidates[0].output; // Retorna a resposta gerada pela IA
+        return data.candidates[0].content.parts[0].text; // Retorna a resposta gerada pela IA
       } else {
         throw new Error("Nenhuma resposta gerada pela IA.");
       }
