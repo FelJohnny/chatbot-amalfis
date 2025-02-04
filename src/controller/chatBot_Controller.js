@@ -72,6 +72,7 @@ class ChatBot_Controller {
                     const responseIA = await chatbot_services.enviaMensagemComIA(messageBody)
                     console.log(responseIA);
                     proximaPergunta = {mensagem: responseIA}
+                    console.log(proximaPergunta);
                     
                   }
                   else {
@@ -85,9 +86,7 @@ class ChatBot_Controller {
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
                   ); // ID inicial
-
-
-
+                  console.log(proximaPergunta);
                 }
 
 
