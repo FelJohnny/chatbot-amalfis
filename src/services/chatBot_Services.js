@@ -336,26 +336,29 @@ class ChatBot_Services {
 
   async enviaMensagemComIA(message) {
     try {
-
       const chat = model.startChat({
-        
-        history: [
-          {
-            role: "user",
-            parts: [{ text: 'seu nome sempre é joao' }],
-          },
-      
-        ],
+          history: [
+              {
+                  role: "user",
+                  parts: [{ text: "input: Seu nome sempre é João.\noutput: Entendido! Meu nome é João." }],
+              },
+              {
+                  role: "user",
+                  parts: [{ text: "input: " + message }], // Define a entrada no formato esperado
+              }
+          ],
       });
-     const respostaiA = await chat.sendMessage([{text:message}]) 
-     const retorno = await respostaiA.response.text()
-     console.log(retorno);
-     
-     return  retorno
-    } catch (error) {
+
+      const respostaiA = await chat.sendMessage([{ text: "output: " }]); // O modelo deve gerar a saída esperada
+      
+      const retorno = await respostaiA.response.text();
+      console.log(retorno);
+
+      return retorno;
+  } catch (error) {
       console.error("Erro ao chamar a API do Gemini:", error);
       return "Desculpe, não consegui processar sua solicitação no momento.";
-    }
+  }
   }
   
 
