@@ -113,11 +113,7 @@ class ChatBot_Controller {
                       cliente.retorno.id
                     );
                   }
-                if (ultimaMensagem.resposta_id ===20) {
-                  
-                  console.log("!teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                }
-                  
+            
 
                   // Inicializa a variável com a mensagem padrão
                   let msgVariable = proximaPergunta.mensagem;
