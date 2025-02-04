@@ -4,8 +4,8 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const API_URL = process.env.API_URL;
 const https = require("https");
 const fetch = require("node-fetch");
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI";
-
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+const GEMINI_API_URL = process.env.GEMINI_API_URL
 
 
 class ChatBot_Services {
