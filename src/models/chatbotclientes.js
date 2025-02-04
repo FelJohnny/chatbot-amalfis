@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       cnpj: DataTypes.STRING,
       cpf: DataTypes.STRING,
       empresa: DataTypes.STRING,
-      qtde_colaborador: DataTypes.INTEGER,
+      qtde_colaborador: DataTypes.STRING,
       local_emp: DataTypes.STRING,
       tipo_entidade: DataTypes.TEXT,
     },

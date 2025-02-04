@@ -34,7 +34,7 @@ module.exports = {
         allowNull: true,
       },
       qtde_colaborador: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       local_emp: {
