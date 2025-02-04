@@ -369,12 +369,15 @@ class ChatBot_Services {
               ❌ Resposta: "Ah, eu adoraria, mas minha especialidade é falar sobre confecção de uniformes! 🧵👕 Se precisar de alguma informação sobre isso, estou aqui para ajudar! 😊"
 
               🔍 Base de Conhecimento:
+              Caso seja perguntado algo semelhante falar que precisa entrar em contato com atendente
               - Quantidade mínima?
               - Prazo de entrega?
               - Prazo de pagamento?
               - Qual o CA do Uniforme FR?
               - Tem catálogos de produtos?
-
+              perguntas cabiveis:
+             
+            
               🚨 Nunca use informações fora dessa base de conhecimento. Responda **apenas** com base nela.
 
               ❓ Pergunta atual do usuário: "${message}"
