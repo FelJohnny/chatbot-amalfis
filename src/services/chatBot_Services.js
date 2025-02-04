@@ -3,6 +3,10 @@ const { Op } = require("sequelize");
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const API_URL = process.env.API_URL;
 const https = require("https");
+const fetch = require("node-fetch");
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI";
+
+
 
 class ChatBot_Services {
   // Verifica se uma mensagem já foi processada
@@ -328,6 +332,40 @@ class ChatBot_Services {
       ""
     );
   }
+
+  async enviaMensagemComIA(message) {
+    try {
+      const payload = {
+        prompt: {
+          text: `gere uma resposta coerente para a seguinte mensagem: "${message}".`,
+        },
+        temperature: 0.7,
+        max_tokens: 150,
+      };
+  
+      const response = await fetch(GEMINI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (data && data.candidates && data.candidates.length > 0) {
+        return data.candidates[0].output; // Retorna a resposta gerada pela IA
+      } else {
+        throw new Error("Nenhuma resposta gerada pela IA.");
+      }
+    } catch (error) {
+      console.error("Erro ao chamar a API do Gemini:", error);
+      return "Desculpe, não consegui processar sua solicitação no momento.";
+    }
+  }
+  
+
+
 }
 
 module.exports = ChatBot_Services;

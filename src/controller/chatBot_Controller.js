@@ -121,12 +121,7 @@ class ChatBot_Controller {
                   let msgVariable = proximaPergunta.mensagem;
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
-                  if (ultimaMensagem) {
-                    console.log(  ultimaMensagem.resposta_id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                    continue
-                    
-                  }
-
+               
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
@@ -155,6 +150,7 @@ class ChatBot_Controller {
                     "Fim do fluxo ou próxima pergunta não encontrada. Encerrando interação."
                   );
                 }
+                    
               }
             }
           }
