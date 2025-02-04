@@ -97,7 +97,8 @@ class ChatBot_Controller {
                         cliente.retorno.id,
                         sessao.id
                       );
-
+                      console.log(conteudo_message,"teste");
+                      
                     await chatbot_services.atulizaRegistroCliente(
                       conteudo_message,
                       proximaPergunta.save_where,
