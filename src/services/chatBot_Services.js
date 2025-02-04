@@ -182,7 +182,7 @@ class ChatBot_Services {
     const resposta = await amalfisCli.ChatbotResposta.findOne({
       where: { id: idResposta },
     });
-    console.log(id,"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+ 
     
     if (!resposta) {
       console.log("Resposta não encontrada");
