@@ -85,10 +85,13 @@ class ChatBot_Controller {
                   );
                 } else {
                   // Primeira interação
+
+                console.log(proximaPergunta,"~teeeeeeeeeeeeeeeeeeeeeeeesteeeeeeeeeee1~");
+                  
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
                   ); // ID inicial
-                  console.log("tesssssssssssssssssssssssssste",ultimaMensagem.resposta_id,);
+                  
                   
                 
                 }
