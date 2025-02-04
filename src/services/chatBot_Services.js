@@ -338,16 +338,17 @@ class ChatBot_Services {
     try {
 
       const chat = model.startChat({
-        // history: [
-        //   {
-        //     role: "user",
-        //     parts: [{ text:message }],
-        //   },
-        //   {
-        //     role: "model",
-        //     parts: [{ text: "seu nome é joao" }],
-        //   },
-        // ],
+        
+        history: [
+          {
+            role: "user",
+            parts: [{ text:message }],
+          },
+          {
+            role: "model",
+            parts: [{ text: "seu nome é joao" }],
+          },
+        ],
       });
      const respostaiA = await chat.sendMessage({text:message}) 
      return respostaiA.text()
