@@ -82,6 +82,7 @@ class ChatBot_Controller {
                   proximaPergunta = await chatbot_services.buscaProximaResposta(
                     ultimaMensagem.resposta_id,
                     messageBody
+                  
 
                     
                   );
@@ -95,6 +96,11 @@ class ChatBot_Controller {
                   ); // ID inicial
                   
                   
+                  
+                }
+                if (ultimaMensagem) {
+                  console.log(  ultimaMensagem.resposta_id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                  continue
                   
                 }
 
