@@ -88,6 +88,12 @@ class ChatBot_Controller {
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
                   ); // ID inicial
+
+                  if (cliente.resposta_id ===20) {
+                    console.log("teeeeeeeeeeeeeeeesteeeeeeeeeee");
+                    
+                    
+                  }
                 }
 
                 if (proximaPergunta) {
@@ -97,7 +103,7 @@ class ChatBot_Controller {
                         cliente.retorno.id,
                         sessao.id
                       );
-                      console.log(conteudo_message,"teste");
+                  
                       
                     await chatbot_services.atulizaRegistroCliente(
                       conteudo_message,
