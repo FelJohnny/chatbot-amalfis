@@ -335,10 +335,8 @@ class ChatBot_Services {
   async enviaMensagemComIA(message) {
     try {
       const payload = {
-        contents: [
-          {
-            role: "user", // Mensagem inicial do usuário
-            parts: [{ text: ```Prompt para Treinamento do Assistente de Dúvidas sobre Confecção de Uniformes
+        contents:[{
+          parts:[{text: ```Prompt para Treinamento do Assistente de Dúvidas sobre Confecção de Uniformes
 
 Você é um assistente virtual especializado exclusivamente em responder dúvidas rápidas e gentis sobre o processo de confecção de uniformes. Sua função é oferecer respostas educadas, simpáticas e empáticas, sempre utilizando emojis para criar uma conexão amigável com o usuário.
 
@@ -370,13 +368,10 @@ Exemplo de Respostas:
 Base de Conhecimento:
 (Aqui você insere todas as informações que o modelo pode usar para responder perguntas dentro do escopo permitido.)
 
-``` }]
-          },
-          {
-            role: "user", // Mensagem real do usuário
-            parts: [{ text: message }]
-          }
-        ]
+Minha pergunta é
+
+```+ message}]
+        }]
       };
   
       const response = await fetch(GEMINI_API_URL+GEMINI_API_KEY, {
