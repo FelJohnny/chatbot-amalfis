@@ -71,7 +71,7 @@ class ChatBot_Controller {
                   if (ultimaMensagem.resposta_id === 20) {
                     const responseIA = await chatbot_services.enviaMensagemComIA(messageBody)
                     console.log(responseIA);
-                    proximaPergunta.mensagem = responseIA
+                    proximaPergunta = {mensagem: responseIA}
                     
                   }
                   else {
