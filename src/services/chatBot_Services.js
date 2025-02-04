@@ -1,11 +1,13 @@
+const  { GoogleGenerativeAI } = require("@google/generative-ai");
 const { amalfisCli } = require("../models/index.js");
 const { Op } = require("sequelize");
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const API_URL = process.env.API_URL;
 const https = require("https");
-const fetch = require("node-fetch");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
 const GEMINI_API_URL = process.env.GEMINI_API_URL
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 
 class ChatBot_Services {
@@ -334,34 +336,21 @@ class ChatBot_Services {
 
   async enviaMensagemComIA(message) {
     try {
-      const payload = {
-        contents: [
-          {
-            role: "model", // Mensagem inicial do usuário
-            parts: [{ text: "Você só fala sobre o tempo, nada mais que isso" }]
-          },
-          {
-            role: "user", // Mensagem real do usuário
-            parts: [{ text: message }]
-          }
-        ]
-      };
-  
-      const response = await fetch(GEMINI_API_URL+GEMINI_API_KEY, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+
+      const chat = model.startChat({
+        // history: [
+        //   {
+        //     role: "user",
+        //     parts: [{ text:message }],
+        //   },
+        //   {
+        //     role: "model",
+        //     parts: [{ text: "seu nome é joao" }],
+        //   },
+        // ],
       });
-  
-      const data = await response.json();
-  
-      if (data && data.candidates && data.candidates.length > 0) {
-        return data.candidates[0].content.parts[0].text; // Retorna a resposta gerada pela IA
-      } else {
-        throw new Error("Nenhuma resposta gerada pela IA.");
-      }
+     const respostaiA = await chat.sendMessage({text:message}) 
+     return respostaiA.text()
     } catch (error) {
       console.error("Erro ao chamar a API do Gemini:", error);
       return "Desculpe, não consegui processar sua solicitação no momento.";
