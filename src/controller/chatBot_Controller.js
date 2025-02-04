@@ -69,7 +69,13 @@ class ChatBot_Controller {
                 // let nomeCli;
                 if (ultimaMensagem) {
                   if (ultimaMensagem.resposta_id === 20) {
-                    console.log(ultimaMensagem);
+                  
+                    const { conteudo_message } =
+                    await chatbot_services.buscaUltimaMensagemCliente(
+                      cliente.retorno.id,
+                      sessao.id
+                    );
+                    console.log(conteudo_message);
                     
                     
                   }
