@@ -69,7 +69,8 @@ class ChatBot_Controller {
                 // let nomeCli;
                 if (ultimaMensagem) {
                   if (ultimaMensagem.resposta_id === 20) {
-                    console.log("teste loooooooooooooooooooooooooooook");
+                    console.log(ultimaMensagem);
+                    
                     
                   }
                   else {
