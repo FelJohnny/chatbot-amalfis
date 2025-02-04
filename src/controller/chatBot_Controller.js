@@ -89,7 +89,7 @@ class ChatBot_Controller {
                     1
                   ); // ID inicial
 
-                  if (cliente.resposta_id ===20) {
+                  if (Number(cliente.resposta_id) ===20) {
                     console.log("teeeeeeeeeeeeeeeesteeeeeeeeeee");
                     
                     
