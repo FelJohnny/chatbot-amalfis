@@ -47,17 +47,6 @@ class ChatBot_Controller {
                   cliente.retorno.id
                 );
 
-                // 3. Verifica se a mensagem do cliente já foi processada para evitar duplicação
-                // const mensagemExistente =
-                //   await chatbot_services.mensagemJaProcessada(
-                //     sessao.id,
-                //     cliente.retorno.id,
-                //     messageBody
-                //   );
-                // if (mensagemExistente) {
-                //   console.log("Mensagem já processada, ignorando...");
-                //   continue;
-                // }
 
                 // 4. Registra a mensagem recebida do cliente
                 await chatbot_services.registraMensagem(
@@ -79,26 +68,26 @@ class ChatBot_Controller {
                 let proximaPergunta;
                 // let nomeCli;
                 if (ultimaMensagem) {
-                  proximaPergunta = await chatbot_services.buscaProximaResposta(
-                    ultimaMensagem.resposta_id,
-                    messageBody
-                  
-
+                  if (ultimaMensagem.resposta_id === 20) {
+                    console.log("teste loooooooooooooooooooooooooooook");
                     
-                  );
+                  }
+                  else {
+                    proximaPergunta = await chatbot_services.buscaProximaResposta(
+                      ultimaMensagem.resposta_id,
+                      messageBody
+                    );
+                  }
                 } else {
                   // Primeira interação
-                  
-                  
-                  
                   proximaPergunta = await chatbot_services.buscaRespostaCliente(
                     1
                   ); // ID inicial
-                  
-                  
-                  
+
+
+
                 }
-             
+
 
                 if (proximaPergunta) {
                   if (proximaPergunta.save_db) {
@@ -107,21 +96,21 @@ class ChatBot_Controller {
                         cliente.retorno.id,
                         sessao.id
                       );
-                  
-                      
+
+
                     await chatbot_services.atulizaRegistroCliente(
                       conteudo_message,
                       proximaPergunta.save_where,
                       cliente.retorno.id
                     );
                   }
-            
+
 
                   // Inicializa a variável com a mensagem padrão
                   let msgVariable = proximaPergunta.mensagem;
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
-               
+
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
@@ -150,7 +139,7 @@ class ChatBot_Controller {
                     "Fim do fluxo ou próxima pergunta não encontrada. Encerrando interação."
                   );
                 }
-                    
+
               }
             }
           }
