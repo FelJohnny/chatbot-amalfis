@@ -122,7 +122,7 @@ class ChatBot_Controller {
                   await chatbot_services.respondeWhatsApp(
                     from,
                     mensagemFormatada,
-                    proximaPergunta.tipo === "texto" ? "text" : "interactive"
+                    proximaPergunta.tipo? proximaPergunta.tipo === "texto" ? "text" : "interactive" : 'text'
                   );
 
                   // 8. Registra a mensagem enviada pelo chatbot

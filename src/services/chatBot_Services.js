@@ -271,9 +271,6 @@ class ChatBot_Services {
   // Processa tipo de mensagem (texto, botão, lista)
   async processaMensagem(tipo, mensagem, opcoes, idCliente) {
     const validaNomeCli = mensagem.includes("{nome_cli}");
-    console.log(tipo);
-    console.log(mensagem);
-    console.log('JADHASDKJAHSDASHDLASHDJASHDSADHJADHASDKJAHSDASHDLASHDJASHDSADHJADHASDKJAHSDASHDLASHDJASHDSADHJADHASDKJAHSDASHDLASHDJASHDSADHJADHASDKJAHSDASHDLASHDJASHDSADH');
     
     let nomeCli;
     if (validaNomeCli) {
