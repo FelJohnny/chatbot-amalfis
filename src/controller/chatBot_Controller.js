@@ -113,7 +113,7 @@ class ChatBot_Controller {
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
                     await chatbot_services.processaMensagem(
-                      proximaPergunta.tipo,
+                      proximaPergunta.tipo ? proximaPergunta.tipo : 'texto',
                       msgVariable, // Mensagem formatada ou original
                       proximaPergunta.opcoes || [], // Opções, se houver
                       cliente.retorno.id
