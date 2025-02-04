@@ -339,18 +339,18 @@ class ChatBot_Services {
 
       const chat = model.startChat({
         
-        history: [
-          {
-            role: "user",
-            parts: [{ text:message }],
-          },
-          {
-            role: "model",
-            parts: [{ text: "seu nome é joao" }],
-          },
-        ],
+        // history: [
+        //   {
+        //     role: "user",
+        //     parts: [{ text:message }],
+        //   },
+        //   {
+        //     role: "model",
+        //     parts: [{ text: "seu nome é joao" }],
+        //   },
+        // ],
       });
-     const respostaiA = await chat.sendMessage({text:message}) 
+     const respostaiA = await chat.sendMessage([{text:message}]) 
      return respostaiA.text()
     } catch (error) {
       console.error("Erro ao chamar a API do Gemini:", error);
