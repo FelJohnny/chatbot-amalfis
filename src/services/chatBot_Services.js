@@ -343,7 +343,7 @@ class ChatBot_Services {
         max_tokens: 150,
       };
   
-      const response = await fetch(GEMINI_API_URL,GEMINI_API_KEY, {
+      const response = await fetch(GEMINI_API_URL+GEMINI_API_KEY, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
