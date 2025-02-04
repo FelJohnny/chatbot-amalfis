@@ -98,11 +98,7 @@ class ChatBot_Controller {
                   
                   
                 }
-                if (ultimaMensagem) {
-                  console.log(  ultimaMensagem.resposta_id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                  continue
-                  
-                }
+             
 
                 if (proximaPergunta) {
                   if (proximaPergunta.save_db) {
@@ -125,6 +121,11 @@ class ChatBot_Controller {
                   let msgVariable = proximaPergunta.mensagem;
 
                   // Substitui {resposta_anterior} caso a próxima pergunta tenha ID 2
+                  if (ultimaMensagem) {
+                    console.log(  ultimaMensagem.resposta_id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                    continue
+                    
+                  }
 
                   // Envia a próxima mensagem ao cliente
                   const mensagemFormatada =
