@@ -69,11 +69,9 @@ class ChatBot_Controller {
                 // let nomeCli;
                 if (ultimaMensagem) {
                   if (ultimaMensagem.resposta_id === 20) {
-                    console.log("111111111111111111111111111111111111111111111111111111111111111111111");
-                    console.log(messageBody);
                     const responseIA = await chatbot_services.enviaMensagemComIA(messageBody)
                     console.log(responseIA);
-                    
+                    proximaPergunta.mensagem = responseIA
                     
                   }
                   else {
