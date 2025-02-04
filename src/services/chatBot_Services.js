@@ -341,7 +341,7 @@ class ChatBot_Services {
         
         history: [
           {
-            role: "model",
+            role: "user",
             parts: [{ text: 'seu nome sempre é joao' }],
           },
       
