@@ -70,6 +70,8 @@ class ChatBot_Controller {
                 if (ultimaMensagem) {
                   if (ultimaMensagem.resposta_id === 20) {
                     console.log("111111111111111111111111111111111111111111111111111111111111111111111");
+                    console.log(messageBody);
+                    
                   }
                   else {
                     proximaPergunta = await chatbot_services.buscaProximaResposta(
