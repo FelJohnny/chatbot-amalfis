@@ -97,12 +97,15 @@ class ChatBot_Controller {
                         cliente.retorno.id,
                         sessao.id
                       );
+
                     await chatbot_services.atulizaRegistroCliente(
                       conteudo_message,
                       proximaPergunta.save_where,
                       cliente.retorno.id
                     );
                   }
+                  console.log(conteudo_message);
+                  
 
                   // Inicializa a variável com a mensagem padrão
                   let msgVariable = proximaPergunta.mensagem;
