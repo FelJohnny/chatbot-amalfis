@@ -336,11 +336,9 @@ class ChatBot_Services {
   async enviaMensagemComIA(message) {
     try {
       const payload = {
-        prompt: {
-          text: `gere uma resposta coerente para a seguinte mensagem: "${message}".`,
-        },
-        temperature: 0.7,
-        max_tokens: 150,
+        contents:[{
+          parts:[{text:message}]
+        }]
       };
   
       const response = await fetch(GEMINI_API_URL+GEMINI_API_KEY, {
