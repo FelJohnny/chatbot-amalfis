@@ -351,7 +351,7 @@ class ChatBot_Services {
         // ],
       });
      const respostaiA = await chat.sendMessage([{text:message}]) 
-     const retorno = await respostaiA.text()
+     const retorno = await respostaiA.response.text()
      console.log(retorno);
      
      return  retorno
